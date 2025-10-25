@@ -10,7 +10,7 @@
 
 .containerLogin img {
     width: 150px;
-    margin-bottom: 29px;
+    margin-bottom: 18px;
 }
 
 .loginTitleContainer {
@@ -62,11 +62,16 @@
     border: 1px solid var(--colorBorder);
     color: var(--placeholderFontColor);
     border-radius: 12px;
-    font-size: 0.6em;
+    font-size: 1em;
     text-align: left;
     width: 100%;
     box-sizing: border-box;
     outline-color: var(--darkGreenColor);
+}
+
+.loginForm input[type="email"],
+.loginForm input[type="password"]:focus {
+    color: var(--darkGreenColor);
 }
 
 .button-submit {
@@ -79,7 +84,7 @@
     font-size: 1.1em;
     font-weight: bold;
     margin-top: 32px;
-    margin-bottom: 25px;
+    margin-bottom: 18px;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -89,7 +94,7 @@
 }
 
 .registerText {
-    margin-top: 20px;
+    margin-top: 12px;
     font-size: 0.9em;
     font-weight: normal;
     text-decoration: none;
