@@ -56,7 +56,7 @@
     display: block;
 }
 
-.loginForm input[type="text"],
+.loginForm input[type="email"],
 .loginForm input[type="password"] {
     padding: 28px 28px 8px 8px;;
     border: 1px solid var(--colorBorder);

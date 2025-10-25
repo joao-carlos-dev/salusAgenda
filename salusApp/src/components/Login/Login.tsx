@@ -38,10 +38,10 @@ const Login = () => {
 
             <form className="loginForm" onSubmit={handleSubmit}>
                 <label htmlFor="text_mail" className="inputLabel">E-mail</label>
-                <input type="text" name="email" placeholder="Digite seu e-mail" value={loginData.email} onChange={handleLogin} id="text_mail" />
+                <input autoComplete="username" type="email" name="email" placeholder="Digite seu e-mail" value={loginData.email} onChange={handleLogin} id="text_mail" />
                 
                 <label htmlFor="password" className="inputLabel">Senha</label>
-                <input type="password" name="password" placeholder="Digite sua senha" value={loginData.password} onChange={handleLogin}/>
+                <input autoComplete="current-password" type="password" name="password" placeholder="Digite sua senha" value={loginData.password} onChange={handleLogin}/>
 
                 <button className="button-submit" type="submit">
                     Login
