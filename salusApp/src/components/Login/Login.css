@@ -1,0 +1,111 @@
+.containerLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 50px;
+    font-family: var(--fontText);
+    background-color: var(--whiteColor);
+}
+
+.containerLogin img {
+    width: 150px;
+    margin-bottom: 29px;
+}
+
+.loginTitleContainer {
+    width: 15%;
+    max-width: 400px;
+    background-color: var(--darkGreenColor);
+    color: var(--whiteColor);
+    text-align: center;
+    padding: 15px 0;
+    border-radius: 8px;
+    z-index: 2;
+    transform: translateY(5px);
+}
+
+.loginTitleContainer h1 {
+    font-size: 1.2em;
+    margin: 0;
+    font-weight: normal;
+}
+
+.login {
+    width: 80%;
+    max-width: 380px;
+    background-color: var(--whiteColor);
+    border: 1px solid var(--darkGreenColor);
+    border-radius: 24px;
+    padding: 59px 20px 40px 20px;
+    margin-top: -20px;
+    z-index: 1;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.inputLabel {
+    font-weight: bold;
+    color: var(--fontColor);
+    margin-bottom: 5px;
+    font-size: 1em;
+    display: block;
+}
+
+.loginForm input[type="text"],
+.loginForm input[type="password"] {
+    padding: 28px 28px 8px 8px;;
+    border: 1px solid var(--colorBorder);
+    color: var(--placeholderFontColor);
+    border-radius: 12px;
+    font-size: 0.6em;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    outline-color: var(--darkGreenColor);
+}
+
+.button-submit {
+    background-color: var(--whiteColor);
+    color: var(--darkGreenColor);
+    border: 1px solid var(--darkGreenColor); 
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 32px;
+    margin-bottom: 25px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button-submit:hover {
+    background-color: var(--darkGreenColor);
+    color: var(--whiteColor);
+}
+
+.registerText {
+    margin-top: 20px;
+    font-size: 0.9em;
+    font-weight: normal;
+    text-decoration: none;
+    color: var(--fontColor);
+}
+
+.registerText:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .loginTitleContainer h1 {
+        font-size: 1.0em;
+    }
+    
+    .loginTitleContainer {
+        width: 120px;
+    }
+}

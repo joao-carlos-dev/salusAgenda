@@ -1,11 +1,12 @@
 /* Constantes */
 :root {
-    --font: "Inter", sans-serif;
+    --fontText: "Inter", sans-serif;
     --fontColor: #000000;
     --placeholderFontColor: #7C7979;
     --darkGreenColor: #2E371D;
     --lightGreenColor: #9CCE3C;
-    --whiteBackgroundColor: #FFFFFF;
+    --whiteColor: #FFFFFF;
+    --colorBorder: #A6A0A0;
 }
 
 /* Reset */
