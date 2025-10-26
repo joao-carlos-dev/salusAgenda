@@ -1,19 +1,19 @@
-.containerLogin {
+.containerLoginRegister {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding-top: 50px;
+    padding-top: 30px;
     font-family: var(--fontText);
     background-color: var(--whiteColor);
 }
 
-.containerLogin img {
+.containerLoginRegister img {
     width: 150px;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
 }
 
-.loginTitleContainer {
+.loginRegisterTitleContainer {
     width: 15%;
     max-width: 400px;
     background-color: var(--darkGreenColor);
@@ -25,13 +25,22 @@
     transform: translateY(5px);
 }
 
-.loginTitleContainer h1 {
+.loginRegisterTitleContainer h1 {
+    color: var(--lightGreenColor);
     font-size: 1.2em;
     margin: 0;
     font-weight: normal;
 }
 
-.login {
+.subTitle {
+    text-align: center;
+    font-family: var(--fontText);
+    color: var(--fontColor);
+    font-size: 1.25em;
+    padding-bottom: 18px;
+}
+
+.loginRegister {
     width: 80%;
     max-width: 380px;
     background-color: var(--whiteColor);
@@ -42,7 +51,7 @@
     z-index: 1;
 }
 
-.loginForm {
+.loginRegisterForm {
     display: flex;
     flex-direction: column;
     gap: 11px;
@@ -51,14 +60,16 @@
 .inputLabel {
     font-weight: bold;
     color: var(--fontColor);
-    margin-bottom: 5px;
+    margin-bottom: -8px;
     font-size: 1em;
     display: block;
 }
 
-.loginForm input[type="email"],
-.loginForm input[type="password"] {
-    padding: 28px 28px 8px 8px;;
+.loginRegisterForm input[type="email"],
+.loginRegisterForm input[type="password"],
+.loginRegisterForm input[type="text"] {
+    padding: 28px 28px 8px 8px;
+    margin-bottom: 10px;
     border: 1px solid var(--colorBorder);
     color: var(--placeholderFontColor);
     border-radius: 12px;
@@ -69,8 +80,9 @@
     outline-color: var(--darkGreenColor);
 }
 
-.loginForm input[type="email"],
-.loginForm input[type="password"]:focus {
+.loginRegisterForm input[type="email"],
+.loginRegisterForm input[type="password"],
+.loginRegisterForm input[type="text"]:focus {
     color: var(--darkGreenColor);
 }
 
@@ -93,6 +105,24 @@
     color: var(--whiteColor);
 }
 
+.button-register {
+    background-color: var(--darkGreenColor);
+    color: var(--lightGreenColor);
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 32px;
+    border: 1px solid var(--darkGreenColor); 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.button-register:hover {
+    background-color: var(--whiteColor);
+    color: var(--darkGreenColor);
+}
+
 .registerText {
     margin-top: 12px;
     font-size: 0.9em;
@@ -105,12 +135,18 @@
     text-decoration: underline;
 }
 
+.bi-arrow-right {
+    color: var(--colorArrow);
+    width: 11px;
+    padding-left: 12px;
+}
+
 @media (max-width: 768px) {
-    .loginTitleContainer h1 {
+    .loginRegisterTitleContainer h1 {
         font-size: 1.0em;
     }
     
-    .loginTitleContainer {
+    .loginRegisterTitleContainer {
         width: 120px;
     }
 }
