@@ -1,8 +1,8 @@
-import type { FormData } from "./FromData";
+import type { FormData } from "./FormData";
 
 export interface StepProps {
     formData: FormData;
-    updateFormData: (fields: Partial<FormData>) => void;
+    updateFormData: (fields: { [K in keyof FormData]?: FormData[K]}) => void;
     nextStep: () => void;
     prevStep: () => void;
 }

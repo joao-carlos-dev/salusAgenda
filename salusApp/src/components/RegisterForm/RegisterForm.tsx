@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FormData } from "../../interfaces/FromData";
+import type { FormData } from "../../interfaces/FormData";
 
 import PersonalInformation from "../PersonalInformation/PersonalInformation";
 import ProfessionalIfomation from "../ProfessionalInformation/ProfessionalInformation";

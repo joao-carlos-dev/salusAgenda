@@ -1,5 +1,5 @@
 import type { DemographicStepProps } from "../../interfaces/DemographicStepProps";
-
+import type { FormData } from "../../interfaces/FormData";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import { useState } from "react";
@@ -10,16 +10,45 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
   handleSubmit,
   //prevStep
 }) => {
-  const [demographicData, setDemographicData] = useState({
-    cpf: formData.cpf,
-  });
+  // const [demographicData, setDemographicData] = useState({
+  //   cpf: formData.cpf,
+  // });
+  const [errors, setErrors] = useState({ cpf: "", genero: "" });
 
-  const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateFormData({ genero: e.target.value})
-  }
+  const validate = () => {
+    let isValid = true;
+    const newErros = { cpf: "", genero: "" };
+
+    if (!formData.genero || formData.genero === "") {
+      newErros.genero = "A seleção de gênero é obrigatória";
+      isValid = false;
+    }
+
+    if (!formData.cpf || formData.cpf.length !== 11) {
+      newErros.cpf = "O CPF é obrigatório e deve ter 11 digitos";
+      isValid = false;
+    }
+
+    setErrors(newErros);
+    return isValid;
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const field = { [name]: value };
+
+    updateFormData(field as unknown as Partial<FormData>);
+  };
+  // const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   updateFormData({ genero: e.target.value})
+  // }
 
   const handleFinish = () => {
-    handleSubmit();
+    if (validate()) {
+      handleSubmit();
+    }
   };
   return (
     <>
@@ -37,35 +66,48 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
             </label>
             <input
               required
-              value={demographicData.cpf}
-              onChange={(e) =>
-                setDemographicData((prev) => ({ ...prev, cpf: e.target.value }))
-              }
+              value={formData.cpf}
+              onChange={handleChange}
               type="text"
-              name="text"
+              name="cpf"
               placeholder="Digite seu CPF"
             />
+            {errors.cpf && <p className="error">{errors.cpf}</p>}
 
-            <label htmlFor="genero">
+            <label htmlFor="genero" className="inputLabel">
               Qual seu gênero
             </label>
-            <select name="genero" id="genero" value={formData.genero} onChange={handleGenderChange}>
+            <select
+              className="selectInput"
+              name="genero"
+              id="genero"
+              value={formData.genero}
+              onChange={handleChange}
+            >
               <option value="">Gênero</option>
               <option value="masculino">Masculino</option>
               <option value="feminino">Feminino</option>
               <option value="nao-binario">Não binário</option>
-            </select>
+            </select> 
 
+
+            {errors.genero && <p className="error">{errors.genero}</p>}
+
+          </form>
+        </div>
+
+        <div className="footerCard">
             <input
               type="checkbox"
               id="declaro"
               name="declaro"
               value="declaro"
             />
-            <label htmlFor="declaro">
+            <label htmlFor="declaro" className="declaro">
               Declaro que e li e concordo com os termos.
             </label>
 
+          <div>
             <button
               id="prosseguir"
               className="button-register"
@@ -75,7 +117,7 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
               Prosseguir
               <i className="bi bi-arrow-right"></i>
             </button>
-          </form>
+          </div>
         </div>
       </section>
     </>

@@ -1,4 +1,5 @@
 import type { StepProps } from "../../interfaces/StepProps";
+import type { FormData } from "../../interfaces/FormData";
 
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
@@ -10,16 +11,52 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
   nextStep
 }) => {
 
-  const [professionalData, setProfessionalData] = useState({
-    profession: formData.profession,
-    specialty: formData.specialty,
-    professionalDocument: formData.professionalDocument,
+  const [errors, setErrors] = useState({
+    profession:'',
+    specialty:'',
+    professionalDocument:''
   });
 
-  const handleNext = () => {
-    updateFormData(professionalData);
-    nextStep();
+  const validate = () => {
+    let isValid = true;
+    const newErrors = { profession: '', specialty:'', professionalDocument:'' };
+
+    if (!formData.profession || formData.profession.length < 3) {
+      newErrors.profession = 'A profissão é um campo obrigatório';
+      isValid = false;
+    }
+
+    if (!formData.specialty || formData.specialty.length < 3) {
+      newErrors.specialty = 'A especialidade é um campo obrigatório';
+      isValid = false;
+    }
+
+     if(!formData.professionalDocument || formData.professionalDocument.length < 6) {
+      newErrors.professionalDocument = 'O documento profissional deve ter pelo menos seis caracteres';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   }
+
+  const handleNext = () => {
+    if(validate()) {
+      updateFormData({
+        profession: formData.profession,
+        specialty: formData.specialty,
+        professionalDocument: formData.professionalDocument
+      });
+      nextStep();
+    };
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      const field = { [name]: value };
+  
+      updateFormData(field as unknown as Partial<FormData>);
+    }
   return (
     <>
       <section className="containerLoginRegister">
@@ -36,45 +73,52 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
             </label>
             <input
               required
-              value={professionalData.profession}
-              onChange={e => setProfessionalData(prev => ({ ...prev, profession: e.target.value}))}
+              value={formData.profession}
+              onChange={handleChange}
               type="text"
-              name="profissao"
+              name="profession"
               placeholder="Digite sua Profissão"
             />
+
+            {errors.profession && <p className="error">{errors.profession}</p>}
+
 
             <label htmlFor="specialty" className="inputLabel">
               Especialidade
             </label>
             <input
               required
-              value={professionalData.specialty}
-              onChange={e => setProfessionalData(prev => ({ ...prev, specialty: e.target.value}))}
+              value={formData.specialty}
+              onChange={handleChange}
               type="text"
-              name="especialidade"
+              name="specialty"
               placeholder="Digite sua especialidade"
             />
+            {errors.specialty && <p className="error">{errors.specialty}</p>}
+
 
             <label htmlFor="professionalDocument" className="inputLabel">
               Documento profissional
             </label>
             <input
               required
-              value={professionalData.professionalDocument}
-              onChange={e => setProfessionalData(prev => ({ ...prev, professionalDocument: e.target.value}))}
-              autoComplete="current-password"
+              value={formData.professionalDocument}
+              onChange={handleChange}
+              autoComplete="professionalDocument"
               type="text"
-              name="documentoprofissional"
+              name="professionalDocument"
               placeholder="Digite seu (CRM, CRO...)"
             />
 
+            {errors.professionalDocument && <p className="error">{errors.professionalDocument}</p>}
+
+          </form>
+          
+        </div>
             <button id="prosseguir" className="button-register" type="button" onClick={handleNext}>
               Prosseguir
               <i className="bi bi-arrow-right"></i>
             </button>
-          </form>
-          
-        </div>
       </section>
     </>
   );
