@@ -164,16 +164,13 @@
     color: var(--placeholderFontColor);
     display: flex;
     margin-top: 15px;
+    display: block;
 }
 
 .footerCard input {
     margin-right: 5px;
+    margin-left: 55px;
 }
-
-.footerCard {
-    display: block;
-}
-
 
 @media (max-width: 768px) {
     .loginRegisterTitleContainer h1 {
@@ -182,5 +179,22 @@
     
     .loginRegisterTitleContainer {
         width: 120px;
+    }
+
+    .button-register {
+        width: 173px;
+        /* margin-left: 8px; */
+    }
+
+    .selectInput {
+        width: 200px;
+    }
+
+    .footerCard input {
+        margin-left: 10px;
+    }
+
+    .footerCard {
+        font-size: 10px;
     }
 }

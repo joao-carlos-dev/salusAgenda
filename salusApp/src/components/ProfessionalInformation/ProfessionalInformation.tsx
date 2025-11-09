@@ -4,59 +4,50 @@ import type { FormData } from "../../interfaces/FormData";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import { useState } from "react";
+import { validateProfessionalInformation } from "../../Utils/Forms";
+
+const initialStepErrors = {
+  profession: "",
+  specialty: "",
+  professionalDocument: "",
+};
 
 const ProfessionalIfonmation: React.FC<StepProps> = ({
   formData,
   updateFormData,
-  nextStep
+  nextStep,
 }) => {
-
-  const [errors, setErrors] = useState({
-    profession:'',
-    specialty:'',
-    professionalDocument:''
-  });
-
-  const validate = () => {
-    let isValid = true;
-    const newErrors = { profession: '', specialty:'', professionalDocument:'' };
-
-    if (!formData.profession || formData.profession.length < 3) {
-      newErrors.profession = 'A profissão é um campo obrigatório';
-      isValid = false;
-    }
-
-    if (!formData.specialty || formData.specialty.length < 3) {
-      newErrors.specialty = 'A especialidade é um campo obrigatório';
-      isValid = false;
-    }
-
-     if(!formData.professionalDocument || formData.professionalDocument.length < 6) {
-      newErrors.professionalDocument = 'O documento profissional deve ter pelo menos seis caracteres';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  }
+  const [errors, setErrors] =
+    useState<typeof initialStepErrors>(initialStepErrors);
 
   const handleNext = () => {
-    if(validate()) {
+    //salva dados
+    const { errors: newErrors, isValid } = validateProfessionalInformation(
+      formData as FormData
+    );
+    if (isValid) {
       updateFormData({
         profession: formData.profession,
         specialty: formData.specialty,
-        professionalDocument: formData.professionalDocument
+        professionalDocument: formData.professionalDocument,
       });
       nextStep();
-    };
+    } else {
+      setErrors({
+        ...initialStepErrors,
+        ...(newErrors as typeof initialStepErrors),
+      });
+    }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      const field = { [name]: value };
-  
-      updateFormData(field as unknown as Partial<FormData>);
-    }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const field = { [name]: value };
+
+    updateFormData(field as unknown as Partial<FormData>);
+  };
   return (
     <>
       <section className="containerLoginRegister">
@@ -82,7 +73,6 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
 
             {errors.profession && <p className="error">{errors.profession}</p>}
 
-
             <label htmlFor="specialty" className="inputLabel">
               Especialidade
             </label>
@@ -95,7 +85,6 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
               placeholder="Digite sua especialidade"
             />
             {errors.specialty && <p className="error">{errors.specialty}</p>}
-
 
             <label htmlFor="professionalDocument" className="inputLabel">
               Documento profissional
@@ -110,15 +99,20 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
               placeholder="Digite seu (CRM, CRO...)"
             />
 
-            {errors.professionalDocument && <p className="error">{errors.professionalDocument}</p>}
-
+            {errors.professionalDocument && (
+              <p className="error">{errors.professionalDocument}</p>
+            )}
           </form>
-          
         </div>
-            <button id="prosseguir" className="button-register" type="button" onClick={handleNext}>
-              Prosseguir
-              <i className="bi bi-arrow-right"></i>
-            </button>
+        <button
+          id="prosseguir"
+          className="button-register"
+          type="button"
+          onClick={handleNext}
+        >
+          Prosseguir
+          <i className="bi bi-arrow-right"></i>
+        </button>
       </section>
     </>
   );

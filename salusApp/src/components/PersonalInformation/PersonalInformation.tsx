@@ -1,9 +1,16 @@
 import type { StepProps } from "../../interfaces/StepProps";
 import type { FormData } from "../../interfaces/FormData";
+import { validatePersonalInformation } from "../../Utils/Forms";
 
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import React, { useState } from "react";
+
+const initialStepErrors = {
+  username:'',
+  email:'',
+  password:''
+}
 
 const PersonalInformation: React.FC<StepProps> = ({
   formData,
@@ -11,57 +18,33 @@ const PersonalInformation: React.FC<StepProps> = ({
   nextStep
 }) => {
 
-  const [errors, setErrors] = useState({
-    username:'',
-    email:'',
-    password:''
-  });
+  const [errors, setErrors] = useState<typeof initialStepErrors >(initialStepErrors);
 
-  //validação central
-  const validate = () => {
-    let isValid = true;
-    const newErrors = { username: '', email:'', password:'' };
-
-
-    //validação nome
-    if (!formData.username || formData.username.length < 3) {
-      newErrors.username = 'Nome completo é um campo obrigatório';
-      isValid = false;
-    }
-
-    //email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
-      newErrors.email = "E-mail é um campo obrigatório";
-      isValid = false;
-    }
-
-    //senha
-    if(!formData.password || formData.password.length < 6) {
-      newErrors.password = 'A senha deve ter pelo menos seis caracteres';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
+  
   const handleNext = () => {
     //salva dados
-    if(validate()) {
+    const { errors: newErrors, isValid } = validatePersonalInformation(formData as FormData);
+    if(isValid) {
       updateFormData({
         username: formData.username,
         email: formData.email,
         password: formData.password
       });
       nextStep();
+    } else {
+      setErrors({
+        ...initialStepErrors,
+        ...(newErrors as typeof initialStepErrors)
+      });
     }
   };
 
-  //att apenas um campo
-  //type FormElement = HTMLInputElement | HTMLSelectElement;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const field = { [name]: value };
+
+    setErrors(prevErrors => ({ ...prevErrors, [name]: ''}))
 
     updateFormData(field as unknown as Partial<FormData>);
   }

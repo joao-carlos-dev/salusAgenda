@@ -4,6 +4,7 @@ import type { FormData } from "../../interfaces/FormData";
 import PersonalInformation from "../PersonalInformation/PersonalInformation";
 import ProfessionalIfomation from "../ProfessionalInformation/ProfessionalInformation";
 import DemographicInformation from "../DemographicInformation/DemographicInformation";
+import { useNavigate } from "react-router-dom";
 
 const initialData: FormData = {
     username: '',
@@ -16,7 +17,9 @@ const initialData: FormData = {
     genero: '',
 };
 
+
 export function RegisterForm() {
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState(initialData);
 
@@ -40,6 +43,7 @@ export function RegisterForm() {
         console.log("Dados finais a serem enviados:", formData);
         //api
         alert("Finalizado");
+        navigate('/')
     };
 
     const stepProps = { formData, updateFormData, nextStep, prevStep};
@@ -62,7 +66,6 @@ export function RegisterForm() {
 
     return (
         <div>
-            <h3>Etapa {currentStep} de 3</h3>
             {content}
         </div>
     )

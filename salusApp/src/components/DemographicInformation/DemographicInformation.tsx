@@ -3,33 +3,35 @@ import type { FormData } from "../../interfaces/FormData";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import { useState } from "react";
+import { validateDemographicInformation } from "../../Utils/Forms";
 
+const initialStepErrors = {
+  cpf: "",
+  genero: "",
+};
 const DemographicInformation: React.FC<DemographicStepProps> = ({
   formData,
   updateFormData,
   handleSubmit,
   //prevStep
 }) => {
-  // const [demographicData, setDemographicData] = useState({
-  //   cpf: formData.cpf,
-  // });
-  const [errors, setErrors] = useState({ cpf: "", genero: "" });
+  const [errors, setErrors] =
+    useState<typeof initialStepErrors>(initialStepErrors);
 
   const validate = () => {
-    let isValid = true;
-    const newErros = { cpf: "", genero: "" };
-
-    if (!formData.genero || formData.genero === "") {
-      newErros.genero = "A seleção de gênero é obrigatória";
-      isValid = false;
+    //salva dados
+    const { errors: newErrors, isValid } = validateDemographicInformation(
+      formData as FormData
+    );
+    if (isValid) {
+      setErrors(initialStepErrors);
+    } else {
+      setErrors({
+        ...initialStepErrors,
+        ...(newErrors as typeof initialStepErrors),
+      });
     }
 
-    if (!formData.cpf || formData.cpf.length !== 11) {
-      newErros.cpf = "O CPF é obrigatório e deve ter 11 digitos";
-      isValid = false;
-    }
-
-    setErrors(newErros);
     return isValid;
   };
 
@@ -41,12 +43,13 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
 
     updateFormData(field as unknown as Partial<FormData>);
   };
-  // const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   updateFormData({ genero: e.target.value})
-  // }
 
   const handleFinish = () => {
     if (validate()) {
+      updateFormData({
+        cpf: formData.cpf,
+        genero: formData.genero,
+      });
       handleSubmit();
     }
   };
@@ -88,37 +91,27 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
               <option value="masculino">Masculino</option>
               <option value="feminino">Feminino</option>
               <option value="nao-binario">Não binário</option>
-            </select> 
-
+            </select>
 
             {errors.genero && <p className="error">{errors.genero}</p>}
-
           </form>
         </div>
 
         <div className="footerCard">
-            <input
-              type="checkbox"
-              id="declaro"
-              name="declaro"
-              value="declaro"
-            />
-            <label htmlFor="declaro" className="declaro">
-              Declaro que e li e concordo com os termos.
-            </label>
-
-          <div>
-            <button
-              id="prosseguir"
-              className="button-register"
-              type="button"
-              onClick={handleFinish}
-            >
-              Prosseguir
-              <i className="bi bi-arrow-right"></i>
-            </button>
-          </div>
+          <input type="checkbox" id="declaro" name="declaro" value="declaro" />
+          <label htmlFor="declaro">
+            Declaro que e li e concordo com os termos.
+          </label>
         </div>
+        <button
+          id="prosseguir"
+          className="button-register"
+          type="button"
+          onClick={handleFinish}
+        >
+          Finalizar
+          <i className="bi bi-arrow-right"></i>
+        </button>
       </section>
     </>
   );
