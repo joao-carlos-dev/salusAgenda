@@ -1,11 +1,14 @@
 import { useState } from "react";
 import type { LoginData } from "../../interfaces/LoginData";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import isError from "../../Utils/isError";
 import '../../styles/LoginRegister.css';
 import Salustext from "../../img/sallustext.png";
 
+import { LoginAPI } from "../../services/salusApi";
+
 const Login = () => {
+    const navigate = useNavigate();
     const [loginData, setLoginData] = useState<LoginData> ({
         email: '',
         password: ''
@@ -19,10 +22,19 @@ const Login = () => {
         }); 
     }
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         try{
-            console.log("Vêm api");
+            const response = await LoginAPI(loginData);
+             if(response.data && response.status === 200){
+                  //alert("Login realizado com sucesso!");
+                  navigate('/scheduling')
+                 sessionStorage.setItem('token', response.data.token);
+                //  const testeRecuperaDado = sessionStorage.getItem('token');
+                //  console.log("Token armazenado no sessionStorage: ", testeRecuperaDado);
+             } else {
+                 alert("Falha no login. Verifique suas credenciais.");
+             }
         } catch(e: unknown) {
             const erroMessage = isError(e) ? e.message : "An unknown error corrured";
             console.error("Login error: ", erroMessage);
@@ -37,14 +49,14 @@ const Login = () => {
         </div>
         <div className="loginRegister">
 
-            <form className="loginRegisterForm" onSubmit={handleSubmit}>
+            <form className="loginRegisterForm">
                 <label htmlFor="text_mail" className="inputLabel">E-mail</label>
-                <input required autoComplete="username" type="email" name="email" placeholder="Digite seu e-mail" value={loginData.email} onChange={handleLogin} id="text_mail" />
+                <input required autoComplete="email" type="email" name="email" placeholder="Digite seu e-mail" value={loginData.email} onChange={handleLogin} id="text_mail" />
                 
                 <label htmlFor="password" className="inputLabel">Senha</label>
                 <input required autoComplete="current-password" type="password" name="password" placeholder="Digite sua senha" value={loginData.password} onChange={handleLogin}/>
 
-                <button className="button-submit" type="submit">
+                <button className="button-submit" type="submit" onClick={handleSubmit}>
                     Login
                 </button>
             </form>

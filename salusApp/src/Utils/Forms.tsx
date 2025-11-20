@@ -22,9 +22,9 @@ export const validatePersonalInformation = (
   const newErrors: Partial<FormErrors> = {};
 
   // Validação nome
-  const usernameError = validateText(formData.username, 3, 'Nome completo');
-  if (usernameError) {
-    newErrors.username = usernameError;
+  const nameError = validateText(formData.name, 3, 'Nome completo');
+  if (nameError) {
+    newErrors.name = nameError;
   }
 
   // Validação email
@@ -46,24 +46,24 @@ export const validatePersonalInformation = (
   return { errors: newErrors, isValid };
 };
 
-export const validateProfessionalInformation = (
+export const validateoccupationalInformation = (
   formData: FormData
 ) : { errors: Partial<FormErrors>; isValid: boolean } => {
   const newErrors: Partial<FormErrors> = {};
 
-  const professionError = validateText(formData.profession, 3, 'A profissão');
-  if (professionError) {
-      newErrors.profession = professionError;
+  const occupationError = validateText(formData.occupation, 3, 'A profissão');
+  if (occupationError) {
+      newErrors.occupation = occupationError;
   }
 
-  const specialtyError = validateText(formData.specialty, 3, 'A especialidade');
-  if (specialtyError) {
-    newErrors.specialty = specialtyError;
+  const expertiseError = validateText(formData.expertise, 3, 'A especialidade');
+  if (expertiseError) {
+    newErrors.expertise = expertiseError;
   }
 
-  const documentError = validateText(formData.professionalDocument, 6, 'O documento profissional');
+  const documentError = validateText(formData.crm, 6, 'O documento profissional');
   if (documentError) {
-    newErrors.professionalDocument = documentError;
+    newErrors.crm = documentError;
   }
 
   const isValid = Object.keys(newErrors).length === 0;
@@ -76,8 +76,8 @@ export const validateDemographicInformation = (
 ) : { errors: Partial<FormErrors>; isValid: boolean } => {
   const newErrors: Partial<FormErrors> = {};
 
-  if (!formData.genero || formData.genero === "") {
-    newErrors.genero = "A seleção de gênero é obrigatória";
+  if (!formData.gender || formData.gender === "") {
+    newErrors.gender = "A seleção de gênero é obrigatória";
   }
 
   if (!formData.cpf) {

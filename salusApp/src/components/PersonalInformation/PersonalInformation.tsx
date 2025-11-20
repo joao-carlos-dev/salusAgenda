@@ -5,12 +5,14 @@ import { validatePersonalInformation } from "../../Utils/Forms";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import React, { useState } from "react";
+// import { useForm } from "react-hook-form";
 
 const initialStepErrors = {
-  username:'',
+  name:'',
   email:'',
-  password:''
-}
+  password:'',
+  phoneNumber: ''
+ }
 
 const PersonalInformation: React.FC<StepProps> = ({
   formData,
@@ -26,9 +28,10 @@ const PersonalInformation: React.FC<StepProps> = ({
     const { errors: newErrors, isValid } = validatePersonalInformation(formData as FormData);
     if(isValid) {
       updateFormData({
-        username: formData.username,
+        name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        phoneNumber: formData.phoneNumber
       });
       nextStep();
     } else {
@@ -59,19 +62,34 @@ const PersonalInformation: React.FC<StepProps> = ({
         <div className="loginRegister">
           <h2 className="subTitle">Dados para login.</h2>
           <form className="loginRegisterForm" onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="username" className="inputLabel">
+            <label htmlFor="name" className="inputLabel">
               Nome Completo
             </label>
             <input
               required
-              autoComplete="username"
+              autoComplete="name"
               type="text"
-              value={formData.username}
+              value={formData.name}
               onChange={handleChange}
-              name="username"
+              name="name"
               placeholder="Digite seu nome completo"
             />
-            {errors.username && <p className="error">{errors.username}</p>}
+            {errors.name && <p className="error">{errors.name}</p>}
+
+
+            <label htmlFor="phonenumber" className="inputLabel">
+              Número de Celular
+            </label>
+            <input
+              required
+              autoComplete="tel"
+              type="tel"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              name="phoneNumber"
+              placeholder="Digite seu número de celular"
+            />
+            {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
 
             <label htmlFor="email" className="inputLabel">
               E-mail

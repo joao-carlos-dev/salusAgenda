@@ -1,5 +1,5 @@
 import type { StepProps } from "./StepProps";
 
 export interface DemographicStepProps extends StepProps {
-    handleSubmit: () => void;
+    handleSubmit: (event: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
 }

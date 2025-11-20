@@ -4,15 +4,15 @@ import type { FormData } from "../../interfaces/FormData";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 import { useState } from "react";
-import { validateProfessionalInformation } from "../../Utils/Forms";
+import { validateoccupationalInformation } from "../../Utils/Forms";
 
 const initialStepErrors = {
-  profession: "",
-  specialty: "",
-  professionalDocument: "",
+  occupation: "",
+  expertise: "",
+  crm: ""
 };
 
-const ProfessionalIfonmation: React.FC<StepProps> = ({
+const OccupationalIfonmation: React.FC<StepProps> = ({
   formData,
   updateFormData,
   nextStep,
@@ -22,14 +22,14 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
 
   const handleNext = () => {
     //salva dados
-    const { errors: newErrors, isValid } = validateProfessionalInformation(
+    const { errors: newErrors, isValid } = validateoccupationalInformation(
       formData as FormData
     );
     if (isValid) {
       updateFormData({
-        profession: formData.profession,
-        specialty: formData.specialty,
-        professionalDocument: formData.professionalDocument,
+        occupation: formData.occupation,
+        expertise: formData.expertise,
+        crm: formData.crm,
       });
       nextStep();
     } else {
@@ -59,48 +59,48 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
         <div className="loginRegister">
           <h2 className="subTitle">Dados profissionais.</h2>
           <form className="loginRegisterForm">
-            <label htmlFor="profession" className="inputLabel">
+            <label htmlFor="occupation" className="inputLabel">
               Profissão
             </label>
             <input
               required
-              value={formData.profession}
+              value={formData.occupation}
               onChange={handleChange}
               type="text"
-              name="profession"
+              name="occupation"
               placeholder="Digite sua Profissão"
             />
 
-            {errors.profession && <p className="error">{errors.profession}</p>}
+            {errors.occupation && <p className="error">{errors.occupation}</p>}
 
-            <label htmlFor="specialty" className="inputLabel">
+            <label htmlFor="expertise" className="inputLabel">
               Especialidade
             </label>
             <input
               required
-              value={formData.specialty}
+              value={formData.expertise}
               onChange={handleChange}
               type="text"
-              name="specialty"
+              name="expertise"
               placeholder="Digite sua especialidade"
             />
-            {errors.specialty && <p className="error">{errors.specialty}</p>}
+            {errors.expertise && <p className="error">{errors.expertise}</p>}
 
-            <label htmlFor="professionalDocument" className="inputLabel">
+            <label htmlFor="crm" className="inputLabel">
               Documento profissional
             </label>
             <input
               required
-              value={formData.professionalDocument}
+              value={formData.crm}
               onChange={handleChange}
-              autoComplete="professionalDocument"
+              autoComplete="crm"
               type="text"
-              name="professionalDocument"
+              name="crm"
               placeholder="Digite seu (CRM, CRO...)"
             />
 
-            {errors.professionalDocument && (
-              <p className="error">{errors.professionalDocument}</p>
+            {errors.crm && (
+              <p className="error">{errors.crm}</p>
             )}
           </form>
         </div>
@@ -118,4 +118,4 @@ const ProfessionalIfonmation: React.FC<StepProps> = ({
   );
 };
 
-export default ProfessionalIfonmation;
+export default OccupationalIfonmation;

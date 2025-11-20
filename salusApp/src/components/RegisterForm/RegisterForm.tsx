@@ -2,19 +2,24 @@ import { useState } from "react";
 import type { FormData } from "../../interfaces/FormData";
 
 import PersonalInformation from "../PersonalInformation/PersonalInformation";
-import ProfessionalIfomation from "../ProfessionalInformation/ProfessionalInformation";
+import OccupationalIfomation from "../OccupationalIfonmation/OccupationalIfonmation";
 import DemographicInformation from "../DemographicInformation/DemographicInformation";
 import { useNavigate } from "react-router-dom";
 
+import { RegisterAPI } from "../../services/salusApi";
+import isError from "../../Utils/isError";
+import type { RegisterPayload } from "../../interfaces/REgisterPayload";
+
 const initialData: FormData = {
-    username: '',
+    name: '',
     email: '',
     password: '',
-    profession: '',
-    specialty: '',
-    professionalDocument: '',
+    occupation: '',
+    expertise: '',
+    crm: '',
     cpf: '',
-    genero: '',
+    gender: '',
+    phoneNumber: ''
 };
 
 
@@ -39,12 +44,43 @@ export function RegisterForm() {
     };
 
     //chama a última etapa
-    const handleSubmit = () => {
-        console.log("Dados finais a serem enviados:", formData);
-        //api
-        alert("Finalizado");
-        navigate('/')
-    };
+
+    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+
+        const payload: RegisterPayload = {
+            personalData: {
+                name: formData.name,
+                cpf: formData.cpf,
+                email: formData.email,
+                password: formData.password,
+                phoneNumber: formData.phoneNumber,
+                gender: formData.gender,
+            },
+            crm: formData.crm,
+            occupation: formData.occupation,
+            expertise: formData.expertise
+        };
+        
+        try{
+            const response = await RegisterAPI(payload);
+             if(response.status === 201){
+                   navigate('/')
+             } else {
+                alert("Cadastro efetuado, mas status inesperado.")
+             }
+        } catch(e: unknown) {
+            const erroMessage = isError(e) ? e.message : "An unknown error corrured";
+            console.error("Cadastro error: ", erroMessage);
+        }
+    }
+
+    // const handleSubmit = () => {
+    //     console.log("Dados finais a serem enviados:", formData);
+    //     //api
+    //     alert("Finalizado");
+    //     navigate('/')
+    // };
 
     const stepProps = { formData, updateFormData, nextStep, prevStep};
 
@@ -55,7 +91,7 @@ export function RegisterForm() {
             content =  <PersonalInformation {...stepProps} />;
             break;
         case 2:
-            content = <ProfessionalIfomation {...stepProps} />;
+            content = <OccupationalIfomation {...stepProps} />;
             break;
         case 3:
             content = <DemographicInformation {...stepProps} handleSubmit={handleSubmit} />;

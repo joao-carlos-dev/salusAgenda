@@ -1,0 +1,154 @@
+
+.containerScheduling {
+  font-family: 'Roboto', sans-serif;
+  max-width: 500px; 
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.navButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.navButtons button {
+  background-color: var(--colorArrow); 
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  color: var(--fontColor);
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.daysWeeks {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 8px;
+}
+
+.day {
+  border: 1px solid var(--fontColor);
+  border-radius: 10px;
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.day.selected {
+  background-color: var(--whiteColor);
+  border-color: var(--lightGreenColor);
+}
+
+.dayWeek {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--placeholderFontColor);
+  margin-bottom: 5px;
+}
+
+.dayNumber {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--fontColor);
+}
+
+.containerHours {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.hours {
+  padding: 10px 0;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.hours.disabled {
+  background-color: var(--colorBorder);
+  color: var(--placeholderFontColor);
+  cursor: not-allowed;
+}
+
+
+.hours.available {
+  background-color: var(--colorBorder); 
+  color:var(--placeholderFontColor);
+}
+
+
+.hours.selected {
+  background-color: var(--whiteColor);
+  border: 2px solid var(--lightGreenColor);
+  color: var(--fontColor);
+}
+
+
+.hours.bordered {
+  background-color: var(--whiteColor);
+  border: 1px solid var(--placeholderFontColor);
+  color: var(--fontColor);
+}
+
+
+.btn-agendar {
+  width:35%; 
+  padding: 10px;
+  background-color: var(--whiteColor);
+  border: 1px solid var(--fontColor);
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+}
+
+.btn-agendar:hover {
+  background-color: var(--lightGreenColor);
+  color: var(--whiteColor);
+}
+
+.day.selected {
+  background-color: #f0ffe0; 
+  border: 2px solid #9ACD32;
+}
+
+
+.day.today:not(.selected) {
+  border: 1px solid #000; 
+  font-weight: bold;
+}

@@ -7,7 +7,7 @@ import { validateDemographicInformation } from "../../Utils/Forms";
 
 const initialStepErrors = {
   cpf: "",
-  genero: "",
+  gender: "",
 };
 const DemographicInformation: React.FC<DemographicStepProps> = ({
   formData,
@@ -44,13 +44,13 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
     updateFormData(field as unknown as Partial<FormData>);
   };
 
-  const handleFinish = () => {
+  const handleFinish = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (validate()) {
       updateFormData({
         cpf: formData.cpf,
-        genero: formData.genero,
+        gender: formData.gender,
       });
-      handleSubmit();
+      handleSubmit(e);
     }
   };
   return (
@@ -77,14 +77,14 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
             />
             {errors.cpf && <p className="error">{errors.cpf}</p>}
 
-            <label htmlFor="genero" className="inputLabel">
+            <label htmlFor="gender" className="inputLabel">
               Qual seu gênero
             </label>
             <select
               className="selectInput"
-              name="genero"
-              id="genero"
-              value={formData.genero}
+              name="gender"
+              id="gender"
+              value={formData.gender}
               onChange={handleChange}
             >
               <option value="">Gênero</option>
@@ -93,7 +93,7 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
               <option value="nao-binario">Não binário</option>
             </select>
 
-            {errors.genero && <p className="error">{errors.genero}</p>}
+            {errors.gender && <p className="error">{errors.gender}</p>}
           </form>
         </div>
 
@@ -109,7 +109,7 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
           type="button"
           onClick={handleFinish}
         >
-          Finalizar
+          Registra
           <i className="bi bi-arrow-right"></i>
         </button>
       </section>

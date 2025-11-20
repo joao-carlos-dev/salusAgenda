@@ -1,10 +1,11 @@
 export interface FormErrors {
-  username: string;
+  name: string;
   email: string;
   password: string;
-  profession: string;
-  specialty: string;
-  professionalDocument: string;
+  occupation: string;
+  expertise: string;
+  crm: string;
   cpf: string;
-  genero: string;
+  gender: string;
+  phoneNumber: string;   
 }

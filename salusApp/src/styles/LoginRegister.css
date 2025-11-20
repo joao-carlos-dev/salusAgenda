@@ -65,9 +65,7 @@
     display: block;
 }
 
-.loginRegisterForm input[type="email"],
-.loginRegisterForm input[type="password"],
-.loginRegisterForm input[type="text"] {
+.loginRegisterForm input {
     padding: 28px 28px 8px 8px;
     margin-bottom: 10px;
     border: 1px solid var(--colorBorder);
@@ -138,7 +136,7 @@
     text-decoration: underline;
 }
 
-.bi-arrow-right {
+.arrowProsseguir {
     color: var(--colorArrow);
     width: 11px;
     padding-left: 12px;
