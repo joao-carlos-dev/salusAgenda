@@ -30,6 +30,7 @@ body {
 
 html,
 body {
+  font-family: var(--fontText);
   height: 100%;
 }
 

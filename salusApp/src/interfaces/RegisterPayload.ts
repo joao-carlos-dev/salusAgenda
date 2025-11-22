@@ -5,6 +5,7 @@ interface PersonalData {
  
     gender: string;
     phoneNumber: string;
+    birthDate: string;
     password: string;
 }
 

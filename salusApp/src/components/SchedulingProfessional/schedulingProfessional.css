@@ -1,0 +1,307 @@
+.containerSchedulingProfessional {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.containerSchedulingProfessional h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--darkGreenColor);
+}
+
+.scheduling {
+  margin-bottom: 24px;
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config {
+  background-color: var(--lightGreenColor);
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.scheduling ul {
+  list-style: none;
+  display: flex;
+  background-color: var(--lightGreenColor);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.scheduling li {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--darkGreenColor);
+}
+
+.active {
+  background-color: var(--whiteColor);
+  color: var(--fontColor);
+  box-shadow: 0 1px 2px var(--lightGreenColor);
+  font-weight: 600;
+}
+
+.schedulingDay {
+  margin-bottom: 24px;
+  max-width: 200px;
+}
+
+.days {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: var(--whiteColor);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--lightGreenColor);
+  box-shadow: 0 1px 2px var(--darkGreenColor);
+}
+
+.days span {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--darkGreenColor);
+}
+
+.days i {
+  font-size: 14px;
+  color: var(--darkGreenColor);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: var(--lightGreenColor);
+  transition: background 0.2s;
+}
+
+.days i:hover {
+  background-color: var(--colorBorder);
+}
+
+.patientConsultaion {
+  background-color: var(--whiteColor);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--lightGreenColor);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px var(--darkGreenColor);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.patientConsultaion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--lightGreenColor);
+}
+
+.patientHours {
+  align-self: flex-start;
+}
+
+.patientHours span {
+  display: inline-block;
+  background-color: var(--lightGreenColor);
+  color: var(--darkGreenColor);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.patientInformation {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patientInformation h3 {
+  font-size: 18px;
+  color: var(--fontColor);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.patientInformation h3:nth-of-type(2) {
+  font-size: 14px;
+  color: var(--fontColor);
+  font-weight: 400;
+}
+
+.patientInformation p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--fontColor);
+  background-color: var(--lightGreenColor);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid var(--darkGreenColor);
+}
+
+.patientConsultaion button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--whiteColor);
+  border: 2px solid var(--lightGreenColor);
+  color: var(--darkGreenColor);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.patientConsultaion button:hover {
+  background-color: var(--lightGreenColor);
+  color: var(--whiteColor);
+}
+
+.weekScheduling {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* agenda por dia */
+.dayWeek {
+  background-color: var(--whiteColor);
+  border-radius: 12px;
+  border: 1px solid var(--lightGreenColor);
+  overflow: hidden;
+}
+
+.dayScheduling {
+  padding: 16px;
+}
+
+
+.dayScheduling > h4 {
+  text-align: center;
+  color: var(--darkGreenColor);
+  margin-bottom: 4px;
+}
+
+
+.dayScheduling > h4:nth-of-type(2) {
+  font-size: 18px;
+  color: var(--lightGreenColor);
+  margin-bottom: 16px;
+  font-weight: 800;
+}
+
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--lightGreenColor); 
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid var(--darkGreenColor); 
+  margin-bottom: 8px;
+  transition: transform 0.2s;
+  min-width: 0;
+  width: 100%;
+}
+
+.info:last-child {
+  margin-bottom: 0;
+}
+
+.info h4 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+
+.info h4:first-child {
+  font-size: 0.9rem;
+  color: var(--darkGreenColor);
+  font-weight: 700;
+  background-color: var(--whiteColor);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+
+.info h4:last-child {
+  font-size: 14px;
+  color: var(--fontColor);
+  font-weight: 600;
+  margin-left: 12px;
+  flex: 1;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .containerSchedulingProfessional {
+    max-width: 800px;
+    padding: 40px;
+  }
+
+  .patientConsultaion {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+  }
+
+  .patientHours {
+    align-self: center;
+    min-width: 80px;
+  }
+
+  .patientInformation {
+    flex: 1;
+    margin: 0 24px;
+  }
+
+  .patientConsultaion button {
+    width: auto;
+    margin-top: 0;
+    padding: 10px 24px;
+    white-space: nowrap;
+  }
+
+  .weekScheduling {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 12px;
+    align-items: start; 
+  }
+
+  .dayWeek {
+    min-height: 300px; 
+  }
+
+  .info {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .info h4:last-child {
+    text-align: left;
+    margin-left: 0;
+    font-size: 0.85rem;
+  }
+}

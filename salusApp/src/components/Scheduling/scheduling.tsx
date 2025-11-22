@@ -86,7 +86,7 @@ const Scheduling = () => {
           return (
             <div
               key={index}
-              className={`day ${isSelected ? "selected" : ""} ${
+              className={`days ${isSelected ? "selected" : ""} ${
                 item.isToday ? "today" : ""
               }`}
               onClick={() => handleDayClick(item.dateObje)}

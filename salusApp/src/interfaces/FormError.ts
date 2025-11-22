@@ -7,5 +7,6 @@ export interface FormErrors {
   crm: string;
   cpf: string;
   gender: string;
-  phoneNumber: string;   
+  phoneNumber: string;
+  birthDate: string;   
 }

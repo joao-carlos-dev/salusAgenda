@@ -46,7 +46,7 @@
   gap: 8px;
 }
 
-.day {
+.days {
   border: 1px solid var(--fontColor);
   border-radius: 10px;
   padding: 10px 5px;
