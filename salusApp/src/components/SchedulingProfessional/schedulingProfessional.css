@@ -71,13 +71,17 @@
   box-shadow: 0 1px 2px var(--darkGreenColor);
 }
 
-.days span {
+/* .days button {
   font-size: 16px;
   font-weight: 700;
   color: var(--darkGreenColor);
-}
+} */
 
-.days i {
+.days button {
+  border: none;
+  
+}
+.days button i {
   font-size: 14px;
   color: var(--darkGreenColor);
   cursor: pointer;
@@ -87,7 +91,7 @@
   transition: background 0.2s;
 }
 
-.days i:hover {
+.days button i:hover {
   background-color: var(--colorBorder);
 }
 
@@ -177,7 +181,7 @@
 }
 
 /* agenda por dia */
-.dayWeek {
+.daysWeek {
   background-color: var(--whiteColor);
   border-radius: 12px;
   border: 1px solid var(--lightGreenColor);
@@ -289,7 +293,7 @@
     align-items: start; 
   }
 
-  .dayWeek {
+  .daysWeek {
     min-height: 300px; 
   }
 

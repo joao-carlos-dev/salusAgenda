@@ -1,9 +1,28 @@
+import { Link } from "react-router-dom";
 import "./schedulingProfessional.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+// import { set } from "zod";
 
 const SchedulingProfessional = () => {
   const [activeTab, setActiveTab] = useState("Dia");
+  const [userId, setUserId] = useState("");
 
+  useEffect(() => {
+    const savedData = sessionStorage.getItem("userData");
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        const realId = parsed.id || parsed.userId || parsed.personalData?.id;
+        setUserId(realId);
+      } catch (e) {
+        console.error("Erro ao ler ID do usuário:", e);
+      }
+    }
+  }, []);
+
+  const linkDestino = userId
+    ? `/updateprofessional/${userId}`
+    : "/updateprofessional/";
   return (
     <section className="containerSchedulingProfessional">
       <h2>Agenda</h2>
@@ -31,19 +50,24 @@ const SchedulingProfessional = () => {
         </ul>
 
         <div className="config">
-          <i className="bi bi-gear"></i>
+          <Link to={linkDestino}>
+            <i className="bi bi-gear"></i>
+          </Link>
         </div>
       </div>
-
 
       {activeTab === "Dia" && (
         <>
           <div className="schedulingDay">
             <div className="days">
-              <i className="bi bi-arrow-left"></i>
-              <span>22 Nov, 2025</span>
-              <i className="bi bi-arrow-right"></i>
+              <button>
+                <i className="bi bi-arrow-left"></i>
+              </button>
+              <button>
+                <i className="bi bi-arrow-right"></i>
+              </button>
             </div>
+            
           </div>
 
           <div className="patientConsultaion">
@@ -63,34 +87,31 @@ const SchedulingProfessional = () => {
       )}
 
       {activeTab === "Semana" && (
-        <>
-          <div className="weekScheduling" id="week">
-            <div className="dayWeek">
-              <div className="dayScheduling">
-                <h4>Seg</h4>
-                <h4>24</h4>
+        <div className="weekScheduling" id="week">
+          <div className="daysWeek">
+            <div className="dayScheduling">
+              <h4>Seg</h4>
+              <h4>24</h4>
 
-                <span className="info">
-                  <h4>08:30</h4>
-                  <h4>João Carlos</h4>
-                </span>
+              <span className="info">
+                <h4>08:30</h4>
+                <h4>João Carlos</h4>
+              </span>
 
-                <span className="info">
-                  <h4>09:30</h4>
-                  <h4>João Carlos</h4>
-                </span>
+              <span className="info">
+                <h4>09:30</h4>
+                <h4>João Carlos</h4>
+              </span>
 
-                <span className="info">
-                  <h4>10:30</h4>
-                  <h4>João Carlos</h4>
-                </span>
-              </div>
+              <span className="info">
+                <h4>10:30</h4>
+                <h4>João Carlos</h4>
+              </span>
             </div>
           </div>
-        </>
+        </div>
       )}
     </section>
   );
 };
-
 export default SchedulingProfessional;

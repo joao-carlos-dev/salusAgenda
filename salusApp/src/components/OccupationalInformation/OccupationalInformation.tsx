@@ -28,6 +28,8 @@ const OccupationalInfonmation: React.FC<StepProps> = ({
   formData,
   updateFormData,
   nextStep,
+  isEdit = false,
+  onSave
 }) => {
   const {
     register,
@@ -45,13 +47,17 @@ const OccupationalInfonmation: React.FC<StepProps> = ({
   // const [errors, setErrors] =
   //   useState<typeof initialStepErrors>(initialStepErrors);
 
-  const onSubmit = (data: OccupationFormData) => {
-    updateFormData({
-      occupation: data.occupation,
-      expertise: data.expertise,
-      crm: data.crm,
-    });
-    nextStep();
+  const onSubmit = async (data: OccupationFormData) => {
+    if (isEdit && onSave) {
+      await onSave(data);
+    } else {
+      updateFormData({
+        occupation: data.occupation,
+        expertise: data.expertise,
+        crm: data.crm,
+      });
+      nextStep();
+    }
   };
 
   // const handleNext = () => {
@@ -87,7 +93,13 @@ const OccupationalInfonmation: React.FC<StepProps> = ({
       <section className="containerLoginRegister">
         <img src={Salustext} alt="Salus Agenda" />
         <div className="loginRegisterTitleContainer">
-          <h1>Registra-se</h1>
+          
+          {!isEdit && (
+            <h1>Registra-se</h1>
+          )}
+          {isEdit && (
+            <h1>Editar Informações Profissionais</h1>
+          )}
         </div>
 
         <div className="loginRegister">
@@ -150,8 +162,8 @@ const OccupationalInfonmation: React.FC<StepProps> = ({
           type="button"
           onClick={handleSubmit(onSubmit)}
         >
-          Prosseguir
-          <i className="bi bi-arrow-right"></i>
+          {isEdit ? "Salvar Alterações" : "Prosseguir"}
+          {!isEdit && <i className="bi bi-arrow-right"></i>}
         </button>
       </section>
     </>

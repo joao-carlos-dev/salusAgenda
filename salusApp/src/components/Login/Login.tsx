@@ -36,17 +36,25 @@ const Login = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    // console.log("[Tentativa]");
-    // console.log("Email", data.email);
-    // console.log("Password", data.password);
-    // console.log(data);
+    console.log("[Tentativa]");
+    console.log("Email", data.email);
+    console.log("Password", data.password);
+    console.log(data);
     setIsLoading(true);
     setLoginError("");
 
     try {
       const response = await LoginAPI(data);
+
+      console.log("Resposta back", response.data);
       if (response.data && response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
+
+        if (response.data.user || response.data.personalData) {
+          const userDataToSave = response.data.user || response.data;
+
+          sessionStorage.setItem("userData", JSON.stringify(userDataToSave));
+        }
         // console.log("Token", response.data.token);
         navigate("/schedulingProfessional");
       } else {

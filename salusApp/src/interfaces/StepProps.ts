@@ -5,4 +5,6 @@ export interface StepProps {
     updateFormData: (data: Partial<FormData>) => void;
     nextStep: () => void;
     prevStep: () => void;
+    isEdit?: boolean;
+    onSave?: (date: Partial<FormData>) => Promise<void>;
 }

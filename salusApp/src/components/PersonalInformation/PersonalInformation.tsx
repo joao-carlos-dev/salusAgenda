@@ -10,11 +10,10 @@ import type { StepProps } from "../../interfaces/StepProps";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 
-
 const personalInfoSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("E-mail inválido"),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres")
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 type PersonalInfoSchema = z.infer<typeof personalInfoSchema>;
 
@@ -25,13 +24,13 @@ type PersonalInfoSchema = z.infer<typeof personalInfoSchema>;
 //   phoneNumber: ''
 //  }
 
-
 const PersonalInformation: React.FC<StepProps> = ({
   formData,
   updateFormData,
-  nextStep
+  nextStep,
+  isEdit = false,
+  onSave,
 }) => {
-
   const {
     register,
     handleSubmit,
@@ -45,14 +44,17 @@ const PersonalInformation: React.FC<StepProps> = ({
     },
   });
 
-  const onSubmit = (data: PersonalInfoSchema) => {
-    updateFormData(data);
-    nextStep();
-  }
+  const onSubmit = async (data: PersonalInfoSchema) => {
+    if (isEdit && onSave) {
+      await onSave(data);
+    } else {
+      updateFormData(data);
+      nextStep();
+    }
+  };
 
   // const [errors, setErrors] = useState<typeof initialStepErrors >(initialStepErrors);
 
-  
   // const handleNext = () => {
   //   //salva dados
   //   const { errors: newErrors, isValid } = validatePersonalInformation(formData as FormData);
@@ -72,7 +74,6 @@ const PersonalInformation: React.FC<StepProps> = ({
   //   }
   // };
 
-
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   //   const { name, value } = e.target;
   //   const field = { [name]: value };
@@ -86,18 +87,28 @@ const PersonalInformation: React.FC<StepProps> = ({
       <section className="containerLoginRegister">
         <img src={Salustext} alt="Salus Agenda" />
         <div className="loginRegisterTitleContainer">
-          <h1>Registra-se</h1>
+          {!isEdit && (
+            <>
+              <h1>Registra-se</h1>
+            </>
+          )}
+
+          {isEdit && (
+            <h1>Editar Informações Pessoais</h1>
+          )}
         </div>
 
         <div className="loginRegister">
           <h2 className="subTitle">Dados para login.</h2>
-          <form className="loginRegisterForm" onSubmit={(e) => e.preventDefault()}>
-
+          <form
+            className="loginRegisterForm"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <label htmlFor="name" className="inputLabel">
               Nome Completo
             </label>
             <input
-              className={errors.name ? 'inputError' : ''}
+              className={errors.name ? "inputError" : ""}
               autoComplete="name"
               type="text"
               // value={formData.name}
@@ -112,7 +123,7 @@ const PersonalInformation: React.FC<StepProps> = ({
               E-mail
             </label>
             <input
-              className={errors.email ? 'inputError' : ''}
+              className={errors.email ? "inputError" : ""}
               // value={formData.email}
               // onChange={handleChange}
               autoComplete="email"
@@ -129,7 +140,7 @@ const PersonalInformation: React.FC<StepProps> = ({
               Senha
             </label>
             <input
-              className={errors.password ? 'inputError' : ''}
+              className={errors.password ? "inputError" : ""}
               // value={formData.password}
               // onChange={handleChange}
               autoComplete="password"
@@ -139,15 +150,20 @@ const PersonalInformation: React.FC<StepProps> = ({
               placeholder="Digite sua senha"
             />
 
-            {errors.password && <p className="error">{errors.password.message}</p>}
-
+            {errors.password && (
+              <p className="error">{errors.password.message}</p>
+            )}
           </form>
-          
         </div>
-            <button id="prosseguir" className="button-register" type="button" onClick={handleSubmit(onSubmit)}>
-              Prosseguir
-              <i className="bi bi-arrow-right"></i>
-            </button>
+        <button
+          id="prosseguir"
+          className="button-register"
+          type="button"
+          onClick={handleSubmit(onSubmit)}
+        >
+          {isEdit ? "Salvar Alterações" : "Prosseguir"} 
+          {!isEdit && <i className="bi bi-arrow-right"></i>}
+        </button>
       </section>
     </>
   );

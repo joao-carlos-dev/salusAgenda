@@ -35,6 +35,8 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
   handleSubmit: parentHandleSubmit,
   disabled,
   buttonText,
+  isEdit = false,
+  onSave
   //prevStep
 }) => {
   const {
@@ -53,13 +55,17 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
     },
   });
 
-  const onSubmit = (data: DemographicSchema) => {
-    updateFormData({
-      cpf: data.cpf,
-      gender: data.gender,
-      phoneNumber: data.phoneNumber,
-      birthDate: data.birthDate,
-    });
+  const onSubmit = async (data: DemographicSchema) => {
+    if (isEdit && onSave) {
+      await onSave(data);
+    } else {
+      updateFormData({
+        cpf: data.cpf,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        birthDate: data.birthDate,
+      });
+    }
 
     if (parentHandleSubmit) {
       parentHandleSubmit({
@@ -76,7 +82,13 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
       <section className="containerLoginRegister">
         <img src={Salustext} alt="Salus Agenda" />
         <div className="loginRegisterTitleContainer">
-          <h1>Registra-se</h1>
+
+          {!isEdit && (
+            <h1>Registra-se</h1>
+          )}
+          {isEdit && (
+            <h1>Editar Informações Demográficas</h1>
+          )}
         </div>
 
         <div className="loginRegister">
@@ -175,9 +187,8 @@ const DemographicInformation: React.FC<DemographicStepProps> = ({
           onClick={handleSubmit(onSubmit)}
           disabled={disabled}
         >
-          {buttonText || "Registrar"}
-
-          {!disabled && <i className="bi bi-arrow-right"></i>}
+          {isEdit ? "Salvar Alterações" : buttonText || "Registrar"}
+          {!isEdit && <i className="bi bi-arrow-right"></i>}
         </button>
       </section>
     </>

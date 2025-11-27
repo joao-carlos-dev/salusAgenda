@@ -78,20 +78,20 @@ const Scheduling = () => {
         </div>
       </div>
 
-      <div className="daysWeeks">
+      <div className="dayWeek">
         {weekDays.map((item, index) => {
           const isSelected =
-            selectedDate && item.dateObje.toISOString() === selectedDate;
+            selectedDate && item.dateObje.toDateString() === selectedDate;
 
           return (
             <div
               key={index}
-              className={`days ${isSelected ? "selected" : ""} ${
+              className={`dayLabel ${isSelected ? "selected" : ""} ${
                 item.isToday ? "today" : ""
               }`}
               onClick={() => handleDayClick(item.dateObje)}
             >
-              <span className="dayWeek">{item.weekDay}</span>
+              <span className="dayNumber">{item.weekDay}</span>
               <span className="dayNumber">{item.dayNumber}</span>
               <span className="dayNumber">{item.month}</span>
             </div>

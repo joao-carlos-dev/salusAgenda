@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import type { RegisterPayload } from "../../interfaces/REgisterPayload";
+import type { RegisterPayload } from "../../interfaces/RegisterPayload";
 import type { FormData } from "../../interfaces/FormData";
 import { RegisterAPI } from "../../services/salusApi";
 import isError from "../../Utils/isError";
 
 import PersonalInformation from "../PersonalInformation/PersonalInformation";
-import OccupationalInformation from "../OccupationalInfonmation/OccupationalInfonmation";
+import OccupationalInformation from "../OccupationalInformation/OccupationalInformation";
 import DemographicInformation from "../DemographicInformation/DemographicInformation";
 
 const initialData: FormData = {

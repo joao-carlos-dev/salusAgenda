@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { LoginData } from '../interfaces/LoginData';
 // import type { FormData } from '../interfaces/FormData';
-import type { RegisterPayload } from '../interfaces/REgisterPayload';
+import type { RegisterPayload } from '../interfaces/RegisterPayload';
 
 const apiClient = axios.create({
      baseURL: 'http://localhost:8080/',
@@ -16,6 +16,10 @@ export const LoginAPI = (loginData: LoginData) => {
 
 export const RegisterAPI = (payload: RegisterPayload) => {
     return apiClient.post('professional/register', payload)
+}
+
+export const UpdateProfessionalAPI = (id: string, payload: RegisterPayload) => {
+    return apiClient.put(`professional/update/${id}`, payload)
 }
 
 export const FetchShareBySymbol = async (symbol: string) => {
