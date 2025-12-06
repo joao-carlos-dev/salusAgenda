@@ -1,3 +1,20 @@
+.notHours {
+  text-align: center;
+  padding: 40px;
+  color: var(--darkGreenColor);
+}
+
+.notHours i {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.notHours link {
+  color: var(--darkGreenColor);
+  font-weight: bold;
+}
+
 .containerSchedulingProfessional {
   padding: 20px;
   max-width: 100%;
@@ -9,20 +26,50 @@
   font-weight: 700;
   margin-bottom: 20px;
   color: var(--darkGreenColor);
+  text-align: center;
+}
+
+.header {
+  display: block;
 }
 
 .scheduling {
   margin-bottom: 24px;
-  display: flex; 
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
   align-items: center;
 }
 
 .config {
   background-color: var(--lightGreenColor);
-  padding: 8px;
+  padding: 10px;
   border-radius: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.config i {
+  color: var(--darkGreenColor);
+  font-size: 20px;
+}
+
+.config i:hover {
+  color: var(--whiteColor);
+}
+.doctor-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nameExpertise {
+  color:var(--darkGreenColor);
+  padding: 8px;
 }
 
 .scheduling ul {
@@ -37,8 +84,8 @@
 .scheduling li {
   flex: 1;
   text-align: center;
-  padding: 10px;
-  font-size: 14px;
+  padding: 8px;
+  font-size: 12px;
   font-weight: 500;
   border-radius: 8px;
   cursor: pointer;
@@ -58,6 +105,12 @@
   max-width: 200px;
 }
 
+.dayLogout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .days {
   display: flex;
   flex-direction: row;
@@ -71,14 +124,9 @@
   box-shadow: 0 1px 2px var(--darkGreenColor);
 }
 
-/* .days button {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--darkGreenColor);
-} */
-
 .days button {
   border: none;
+  background: none;
   
 }
 .days button i {
@@ -91,14 +139,11 @@
   transition: background 0.2s;
 }
 
-.days button i:hover {
-  background-color: var(--colorBorder);
-}
-
-.patientConsultaion {
+.patientConsultation {
   background-color: var(--whiteColor);
   border-radius: 16px;
   padding: 20px;
+  margin-bottom: 8px;
   border: 1px solid var(--lightGreenColor);
   display: flex;
   flex-direction: column;
@@ -107,7 +152,7 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.patientConsultaion:hover {
+.patientConsultation:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px var(--lightGreenColor);
 }
@@ -155,7 +200,7 @@
   border-left: 3px solid var(--darkGreenColor);
 }
 
-.patientConsultaion button {
+.patientConsultationButton {
   width: 100%;
   padding: 14px;
   background-color: var(--whiteColor);
@@ -167,11 +212,44 @@
   cursor: pointer;
   transition: all 0.2s;
   margin-top: 8px;
-}
+} 
 
-.patientConsultaion button:hover {
+
+.patientConsultationButton:hover {
   background-color: var(--lightGreenColor);
   color: var(--whiteColor);
+}
+
+.patientInformation i {
+  margin-right: 8px;
+}
+
+.buttonBlockHour {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--colorRed);
+  border: none;
+  color: var(--whiteColor);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.buttonFreeHour {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--lightGreenColor);
+  border: none;
+  color: var(--whiteColor);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 50px;
+  cursor: default;
+  transition: all 0.2s;
+  margin-top: 8px;
 }
 
 .weekScheduling {
@@ -257,12 +335,54 @@
 }
 
 @media (min-width: 768px) {
+
+  .header {
+    padding: 12px 14px;
+    background-color: transparent; 
+  }
+
+  .header h2 {
+    text-align: left;
+    margin-bottom: 14px;
+  }
+
+    .scheduling {
+    flex-direction: row; 
+    justify-content: space-between;
+    background-color: var(--whiteColor);
+    padding: 8px 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--lightGreenColor); 
+    border: 1px solid var(--whiteColor);
+  }
+
+  .scheduling ul {
+    width: auto;
+    gap: 5px;
+    background-color: var(--lightGreenColor);
+  }
+
+  .scheduling ul li {
+    padding: 8px 20px; 
+    width: auto; 
+  }
+  .doctorName {
+    font-size: 18px;
+    align-items: flex-start; 
+    text-align: left;
+    padding: 0 14px; 
+    border-left: 1px solid var(--lightGreenColor); 
+    border-right: 1px solid var(--lightGreenColor);
+    flex-grow: 1; 
+    justify-content: center;
+  }
   .containerSchedulingProfessional {
     max-width: 800px;
     padding: 40px;
   }
 
-  .patientConsultaion {
+
+  .patientConsultation {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -279,7 +399,7 @@
     margin: 0 24px;
   }
 
-  .patientConsultaion button {
+  .patientConsultation button {
     width: auto;
     margin-top: 0;
     padding: 10px 24px;

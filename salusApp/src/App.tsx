@@ -4,7 +4,7 @@ import Login from "./components/Login/Login";
 import { RegisterForm } from "./components/RegisterForm/RegisterForm";
 import Scheduling from "./components/Scheduling/scheduling";
 import SchedulingProfessional from "./components/SchedulingProfessional/SchedulingProfessional";
-import { UpdateProfessional } from "./components/UpdateProfessional/UpdateProfessional";
+import ConfigureHours from "./components/ConfigureHours/ConfigureHours";
 
 function App() {
   return (
@@ -17,11 +17,7 @@ function App() {
           path="/schedulingprofessional"
           element={<SchedulingProfessional />}
         />
-        <Route
-          path="/updateprofessional/:id"
-          element={<UpdateProfessional />}
-        />
-        <Route path="/updateprofessional/" element={<UpdateProfessional />} />
+        <Route path="/configure-hours" element={<ConfigureHours />} />
       </Routes>
     </Router>
   );

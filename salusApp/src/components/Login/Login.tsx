@@ -50,10 +50,10 @@ const Login = () => {
       if (response.data && response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
 
-        if (response.data.user || response.data.personalData) {
-          const userDataToSave = response.data.user || response.data;
+        if (response.data.id || response.data.user || response.data.personalData) {
+          const dataToSave = response.data.user || response.data;
 
-          sessionStorage.setItem("userData", JSON.stringify(userDataToSave));
+          sessionStorage.setItem("userData", JSON.stringify(dataToSave));
         }
         // console.log("Token", response.data.token);
         navigate("/schedulingProfessional");

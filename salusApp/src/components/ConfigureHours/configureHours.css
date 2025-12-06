@@ -1,0 +1,138 @@
+.config-hours-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--whiteColor);
+  min-height: 100vh;
+}
+
+.config-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: var(--darkGreenColor);
+  font-size: 12px;
+  margin-bottom: 15px;
+  float: left; 
+}
+
+.config-header h2 {
+  color: var(--darkGreenColor);
+  margin: 10px 0 5px 0;
+  clear: both;
+}
+
+.config-header p {
+  color: var(--darkGreenColor);
+  font-size: 12px;
+}
+
+
+.hours-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px;
+  margin-bottom: 80px; 
+}
+
+.time-slot {
+  background-color: var(--whiteColor);
+  border: 1px solid var(--lightGreenColor);
+  border-radius: 8px;
+  padding: 12px 5px;
+  font-size: 12px;
+  color: var(--darkGreenColor);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  position: relative;
+}
+
+.time-slot:hover {
+  background-color: var(--lightGreenColor);
+  border-color: var(--darkGreenColor);
+}
+
+.time-slot.selected {
+  background-color: var(--darkGreenColor);
+  color: var(--lightGreenColor);
+  border-color: var(--whiteColor);
+  font-weight: 600;
+  box-shadow: 0 4px 6px var(--lightGreenColor);
+}
+
+.time-slot i {
+  font-size: 0.8rem;
+}
+
+.config-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--whiteColor);
+  padding: 15px 20px;
+  box-shadow: 0 -2px 10px var(--lightGreenColor);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+
+.summary {
+  font-size: 0.9rem;
+  color: var(--darkGreenColor);
+}
+
+.save-btn {
+  background-color: var(--lightGreenColor);
+  color: var(--whiteColor);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-btn:hover {
+  background-color: var(--darkGreenColor);
+}
+
+.save-btn:disabled {
+  background-color: var(--whiteColor);
+  cursor: not-allowed;
+}
+
+
+@media (min-width: 768px) {
+  .config-hours-container {
+    margin-top: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--lightGreenColor);
+    min-height: auto;
+    padding-bottom: 40px;
+  }
+
+  .config-footer {
+    position: static; 
+    box-shadow: none;
+    margin-top: 30px;
+    padding: 0;
+  }
+
+  .hours-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
