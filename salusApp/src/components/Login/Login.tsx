@@ -10,7 +10,7 @@ import Salustext from "../../img/sallustext.png";
 
 // import type { LoginData } from "../../interfaces/LoginData";
 
-import { LoginAPI } from "../../services/salusApi";
+import { LoginAPI, LoginPatient } from "../../services/salusApi";
 
 const loginSchema = z.object({
   email: z
@@ -22,10 +22,13 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+type UserType = "prefessional" | "patient";
+
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [userType, setUserType] = useState<UserType>("patient");
 
   const {
     register,
@@ -44,19 +47,38 @@ const Login = () => {
     setLoginError("");
 
     try {
-      const response = await LoginAPI(data);
+      let response;
+
+      if (userType === "prefessional") {
+        response = await LoginAPI(data);
+      } else {
+        response = await LoginPatient(data);
+      }
 
       console.log("Resposta back", response.data);
+      console.log(`Resposta (${userType}):`, response.data);
+
       if (response.data && response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("userType", userType);
 
-        if (response.data.id || response.data.user || response.data.personalData) {
+        if (
+          response.data.id ||
+          response.data.user ||
+          response.data.personalData
+        ) {
           const dataToSave = response.data.user || response.data;
 
           sessionStorage.setItem("userData", JSON.stringify(dataToSave));
         }
         // console.log("Token", response.data.token);
-        navigate("/schedulingProfessional");
+        // navigate("/schedulingProfessional");
+
+        if (userType === "prefessional") {
+          navigate("/schedulingProfessional");
+        } else {
+          navigate("/schedulingregister");
+        }
       } else {
         setLoginError("Falha no login. Verifique suas credenciais.");
       }
@@ -70,7 +92,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <>
       <section className="containerLoginRegister">
@@ -79,21 +101,39 @@ const Login = () => {
           <h1>Faça seu login</h1>
         </div>
         <div className="loginRegister">
+          <div className="userTypeSelector">
+            <button
+              type="button"
+              className={userType == "patient" ? "active" : ""}
+              onClick={() => setUserType("patient")}
+            >
+              Paciente
+            </button>
+
+            <button
+              type="button"
+              className={userType == "prefessional" ? "active" : ""}
+              onClick={() => setUserType("prefessional")}
+            >
+              Profissional
+            </button>
+
+          </div>
           <form className="loginRegisterForm" onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="text_mail" className="inputLabel">
               E-mail
             </label>
             <input
-            //   required
-            className={errors.email ? "inputError" : ""}
+              //   required
+              className={errors.email ? "inputError" : ""}
               autoComplete="email"
               type="email"
-            //   name="email"
+              //   name="email"
               placeholder="Digite seu e-mail"
-            //   value={loginData.email}
-            //   onChange={handleLogin}
+              //   value={loginData.email}
+              //   onChange={handleLogin}
               id="text_mail"
-                {...register("email")}
+              {...register("email")}
             />
 
             {errors.email && <p className="error">{errors.email.message}</p>}
@@ -102,18 +142,20 @@ const Login = () => {
               Senha
             </label>
             <input
-            //   required
-            className={errors.password ? "inputError" : ""}
+              //   required
+              className={errors.password ? "inputError" : ""}
               autoComplete="current-password"
               type="password"
-            //   name="password"
+              //   name="password"
               placeholder="Digite sua senha"
-            //   value={loginData.password}
-            //   onChange={handleLogin}
-                {...register("password")}
+              //   value={loginData.password}
+              //   onChange={handleLogin}
+              {...register("password")}
             />
 
-            {errors.password && <p className="error">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="error">{errors.password.message}</p>
+            )}
 
             {loginError && <p className="error">{loginError}</p>}
 
@@ -121,18 +163,22 @@ const Login = () => {
               className="button-submit"
               type="submit"
               disabled={isLoading}
-            //   onClick={handleSubmit}
+              //   onClick={handleSubmit}
             >
-                {isLoading ? "Carregando..." : "Login"}
+              {isLoading ? "Carregando..." : "Login"}
             </button>
           </form>
         </div>
-        <Link to="/register" className="registerText">
-          Ainda não tem uma conta? Registre-se
+
+        <Link to={userType === "prefessional" ? "/register" : "/registerpatient"} className="registerText">
+            Ainda não tem uma conta?<strong>Registre-se com {userType === "patient" ? "Paciente" : "Profissional"}</strong>
         </Link>
+    
       </section>
     </>
   );
 };
 
 export default Login;
+
+// borgesjoao@teste.com

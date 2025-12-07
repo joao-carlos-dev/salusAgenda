@@ -14,12 +14,19 @@ const apiClient = axios.create({
     hours: string[]; 
 }
 
+export interface ScheduleRequestDto {
+  consultationDate: string;       
+  consultationTime: string;      
+  consultationDescription: string;
+  consultationCategoryId: number; 
+  patientId: string;              
+  professionalUserId: string;     
+}
+
  apiClient.interceptors.request.use(
   (config) => {
-    // 1. Tenta pegar o token salvo no navegador
     const token = sessionStorage.getItem("token");
 
-    // 2. Se o token existir, injeta no cabeçalho da requisição
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,19 +38,15 @@ const apiClient = axios.create({
   }
 );
 
-// (Opcional) Interceptor de Resposta para lidar com token expirado
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Se o backend retornar 403 (Proibido) ou 401 (Não autorizado)
     if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         console.warn("Token expirado ou inválido. Redirecionando para login...");
         
-        // Limpa os dados velhos
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("userData");
         
-        // Força o redirecionamento para a tela de login
         window.location.href = "/";
     }
     return Promise.reject(error);
@@ -77,6 +80,26 @@ export const UpdateProfessionalHoursAPI = (id: string, hoursList: string[]) => {
 
 export const GetProfessionalHoursAPI = (id: string) => {
     return apiClient.get(`professional/findAllHours/${id}`);
+}
+
+export const RegisterPatient = (payload: RegisterPayload) => {
+  return apiClient.post('patient/register', payload)
+}
+
+export const LoginPatient = (loginData: LoginData) => {
+     return apiClient.post('auth/patient/login', loginData)
+}
+
+export const SchedulingRegisterApi = (payload: ScheduleRequestDto) => {
+  return apiClient.post('schedule/register', payload)
+}
+
+export const GenerateConsultationLinkApi = (professionalId: string) => {
+  return apiClient.post('consultationLink/generate', { professionalId });
+}
+
+export const ValidateConsultationLinkApi = (linkkId: string) => {
+  return apiClient.get(`consultationLink/validate/${linkkId}`);
 }
 
 export const FetchShareBySymbol = async (symbol: string) => {

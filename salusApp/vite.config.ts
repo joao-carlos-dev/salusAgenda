@@ -17,6 +17,21 @@ export default defineConfig({
         target: 'https://sallusagenda.onrender.com',
         changeOrigin: true,
         secure: false,
+      },
+      '/patient': {
+        target: 'https://sallusagenda.onrender.com',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/schedule': {
+        target: 'https://sallusagenda.onrender.com',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/consultationLink': {
+        target: 'https://sallusagenda.onrender.com',
+        changeOrigin: true,
+        secure: false,
       }
     }
   }

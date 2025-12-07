@@ -1,26 +1,18 @@
-// import React, { useState } from "react";
+import z from "zod";
+import Salustext from "../../img/sallustext.png";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { StepProps } from "../../interfaces/StepProps";
-import "../../styles/LoginRegister.css";
-import Salustext from "../../img/sallustext.png";
 
-const personalInfoSchema = z.object({
+const patientInformation = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("E-mail inválido"),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
-type PersonalInfoSchema = z.infer<typeof personalInfoSchema>;
 
-// const initialStepErrors = {
-//   name:'',
-//   email:'',
-//   password:'',
-//   phoneNumber: ''
-//  }
+type PatientInfoSchema = z.infer<typeof patientInformation>;
 
-const PersonalInformation: React.FC<StepProps> = ({
+const PatientInformation: React.FC<StepProps> = ({
   formData,
   updateFormData,
   nextStep,
@@ -31,8 +23,8 @@ const PersonalInformation: React.FC<StepProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PersonalInfoSchema>({
-    resolver: zodResolver(personalInfoSchema),
+  } = useForm<PatientInfoSchema>({
+    resolver: zodResolver(patientInformation),
     defaultValues: {
       name: formData.name || "",
       email: formData.email || "",
@@ -40,7 +32,7 @@ const PersonalInformation: React.FC<StepProps> = ({
     },
   });
 
-  const onSubmit = async (data: PersonalInfoSchema) => {
+  const onSubmit = async (data: PatientInfoSchema) => {
     if (isEdit && onSave) {
       await onSave(data);
     } else {
@@ -49,57 +41,17 @@ const PersonalInformation: React.FC<StepProps> = ({
     }
   };
 
-  // const [errors, setErrors] = useState<typeof initialStepErrors >(initialStepErrors);
-
-  // const handleNext = () => {
-  //   //salva dados
-  //   const { errors: newErrors, isValid } = validatePersonalInformation(formData as FormData);
-  //   if(isValid) {
-  //     updateFormData({
-  //       name: formData.name,
-  //       email: formData.email,
-  //       password: formData.password,
-  //       phoneNumber: formData.phoneNumber
-  //     });
-  //     nextStep();
-  //   } else {
-  //     setErrors({
-  //       ...initialStepErrors,
-  //       ...(newErrors as typeof initialStepErrors)
-  //     });
-  //   }
-  // };
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  //   const { name, value } = e.target;
-  //   const field = { [name]: value };
-
-  //   setErrors(prevErrors => ({ ...prevErrors, [name]: ''}))
-
-  //   updateFormData(field as unknown as Partial<FormData>);
-  // }
   return (
     <>
       <section className="containerLoginRegister">
         <img src={Salustext} alt="Salus Agenda" />
         <div className="loginRegisterTitleContainer">
-          {!isEdit && (
-            <>
-              <h1>Registra-se</h1>
-            </>
-          )}
-
-          {isEdit && (
-            <h1>Editar Informações Pessoais</h1>
-          )}
+          <h1>Registra-se</h1>
         </div>
 
         <div className="loginRegister">
           <h2 className="subTitle">Dados para login.</h2>
-          <form
-            className="loginRegisterForm"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="loginRegisterForm">
             <label htmlFor="name" className="inputLabel">
               Nome Completo
             </label>
@@ -107,11 +59,8 @@ const PersonalInformation: React.FC<StepProps> = ({
               className={errors.name ? "inputError" : ""}
               autoComplete="name"
               type="text"
-              // value={formData.name}
-              // onChange={handleChange}
-              // name="name"
-              {...register("name")}
               placeholder="Digite seu nome completo"
+              {...register("name")}
             />
             {errors.name && <p className="error">{errors.name.message}</p>}
 
@@ -120,14 +69,11 @@ const PersonalInformation: React.FC<StepProps> = ({
             </label>
             <input
               className={errors.email ? "inputError" : ""}
-              // value={formData.email}
-              // onChange={handleChange}
               autoComplete="email"
               type="email"
-              // name="email"
-              {...register("email")}
               placeholder="Digite seu e-mail"
               id="text_mail"
+              {...register("email")}
             />
 
             {errors.email && <p className="error">{errors.email.message}</p>}
@@ -137,13 +83,10 @@ const PersonalInformation: React.FC<StepProps> = ({
             </label>
             <input
               className={errors.password ? "inputError" : ""}
-              // value={formData.password}
-              // onChange={handleChange}
               autoComplete="password"
               type="password"
-              // name="password"
-              {...register("password")}
               placeholder="Digite sua senha"
+              {...register("password")}
             />
 
             {errors.password && (
@@ -157,7 +100,7 @@ const PersonalInformation: React.FC<StepProps> = ({
           type="button"
           onClick={handleSubmit(onSubmit)}
         >
-          {isEdit ? "Salvar Alterações" : "Prosseguir"} 
+          Prosseguir
           {!isEdit && <i className="bi bi-arrow-right"></i>}
         </button>
       </section>
@@ -165,4 +108,4 @@ const PersonalInformation: React.FC<StepProps> = ({
   );
 };
 
-export default PersonalInformation;
+export default PatientInformation;

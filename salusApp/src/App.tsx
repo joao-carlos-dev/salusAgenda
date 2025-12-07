@@ -5,6 +5,9 @@ import { RegisterForm } from "./components/RegisterForm/RegisterForm";
 import Scheduling from "./components/Scheduling/scheduling";
 import SchedulingProfessional from "./components/SchedulingProfessional/SchedulingProfessional";
 import ConfigureHours from "./components/ConfigureHours/ConfigureHours";
+import { RegisterFormPatient } from "./components/RegisterFormPatient/RegisterFormPatient";
+import PatientBooking from "./components/PatientBooking/PatientBooking";
+// import SchedulingRegister from "./components/SchedulingRegister/SchedulingRegister";
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
           element={<SchedulingProfessional />}
         />
         <Route path="/configure-hours" element={<ConfigureHours />} />
+        <Route path="/registerpatient" element={<RegisterFormPatient />} />
+        {/* <Route path="/schedulingregister" element={<SchedulingRegister />} /> */}
+        <Route path="/agendar/:linkId" element={<PatientBooking />} />
       </Routes>
     </Router>
   );

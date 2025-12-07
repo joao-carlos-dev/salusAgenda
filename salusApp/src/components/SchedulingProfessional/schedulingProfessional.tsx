@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import {
+  GenerateConsultationLinkApi,
   GetProfessionalDataById,
   GetProfessionalHoursAPI,
   UpdateProfessionalHoursAPI,
@@ -167,6 +168,32 @@ const SchedulingProfessional = () => {
     } catch (error) {
       console.error("Erro ao remover horário:", error);
       alert("Erro ao atualizar a grade. Tente novamente.");
+    }
+  };
+
+  const handleGenerateLink = async () => {
+    if (!userId) return;
+    try {
+      const response = await GenerateConsultationLinkApi(userId);
+      console.log("Link gerado:", response.data);
+
+      const urlString =
+        typeof response.data === "string"
+          ? response.data
+          : response.data.url || response.data.link;
+
+      const parts = urlString.split("/");
+      const linkId = parts[parts.length - 1];
+
+      const frontendLink = `${window.location.origin}/agendar/${linkId}`;
+
+      navigator.clipboard.writeText(frontendLink);
+      alert(
+        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${frontendLink}`
+      );
+    } catch (error) {
+      console.error("Erro ao gerar link:", error);
+      alert("Erro ao gerar link de agendamento.");
     }
   };
 
@@ -405,6 +432,12 @@ const SchedulingProfessional = () => {
                 onClick={handleLogout}
               ></i>
             </div>
+            <i
+              className="bi bi-share-fill"
+              title="Gerar Link de Agendamento"
+              onClick={handleGenerateLink}
+              style={{ cursor: "pointer", color: "#007bff" }}
+            ></i>
           </div>
         </div>
       </div>

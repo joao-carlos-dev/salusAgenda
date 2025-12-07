@@ -1,199 +1,232 @@
+.userTypeSelector {
+  display: flex;
+  background-color: var(--whiteColor);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.userTypeSelector button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--darkGreenColor);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.userTypeSelector button.active {
+  background-color: var(--whiteColor);
+  color: var(--lightGreenColor);
+  box-shadow: 0 2px 4px var(--darkGreenColor);
+  font-weight: 600;
+}
+
+.userTypeSelector button:hover:not(.active) {
+  background-color: var(--darkGreenColor);
+}
+
 .containerLoginRegister {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding-top: 30px;
-    font-family: var(--fontText);
-    background-color: var(--whiteColor);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 30px;
+  font-family: var(--fontText);
+  background-color: var(--whiteColor);
 }
 
 .containerLoginRegister img {
-    width: 150px;
-    margin-bottom: 12px;
+  width: 150px;
+  margin-bottom: 12px;
 }
 
 .loginRegisterTitleContainer {
-    /* width: 15%;
+  /* width: 15%;
     max-width: 400px; */
-    width: fit-content;
-    background-color: var(--darkGreenColor);
-    color: var(--whiteColor);
-    text-align: center;
-    padding: 15px 0;
-    border-radius: 8px;
-    z-index: 2;
-    transform: translateY(5px);
+  width: fit-content;
+  background-color: var(--darkGreenColor);
+  color: var(--whiteColor);
+  text-align: center;
+  padding: 15px 0;
+  border-radius: 8px;
+  z-index: 2;
+  transform: translateY(5px);
 }
 
 .loginRegisterTitleContainer h1 {
-    color: var(--lightGreenColor);
-    font-size: 1.2em;
-    margin: 0;
-    font-weight: normal;
+  color: var(--lightGreenColor);
+  font-size: 1.2em;
+  margin: 0;
+  font-weight: normal;
 }
 
 .subTitle {
-    text-align: center;
-    font-family: var(--fontText);
-    color: var(--fontColor);
-    font-size: 1.25em;
-    padding-bottom: 18px;
+  text-align: center;
+  font-family: var(--fontText);
+  color: var(--fontColor);
+  font-size: 1.25em;
+  padding-bottom: 18px;
 }
 
 .loginRegister {
-    width: 80%;
-    max-width: 380px;
-    background-color: var(--whiteColor);
-    border: 1px solid var(--darkGreenColor);
-    border-radius: 24px;
-    padding: 59px 20px 40px 20px;
-    margin-top: -20px;
-    z-index: 1;
+  width: 80%;
+  max-width: 380px;
+  background-color: var(--whiteColor);
+  border: 1px solid var(--darkGreenColor);
+  border-radius: 24px;
+  padding: 59px 20px 40px 20px;
+  margin-top: -20px;
+  z-index: 1;
 }
 
 .loginRegisterForm {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
 }
 
 .inputLabel {
-    font-weight: bold;
-    color: var(--fontColor);
-    margin-bottom: -8px;
-    font-size: 1em;
-    display: block;
+  font-weight: bold;
+  color: var(--fontColor);
+  margin-bottom: -8px;
+  font-size: 1em;
+  display: block;
 }
 
 .loginRegisterForm input {
-    padding: 28px 28px 8px 8px;
-    margin-bottom: 10px;
-    border: 1px solid var(--colorBorder);
-    color: var(--placeholderFontColor);
-    border-radius: 12px;
-    font-size: 1em;
-    text-align: left;
-    width: 100%;
-    box-sizing: border-box;
-    outline-color: var(--darkGreenColor);
+  padding: 28px 28px 8px 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--colorBorder);
+  color: var(--placeholderFontColor);
+  border-radius: 12px;
+  font-size: 1em;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+  outline-color: var(--darkGreenColor);
 }
 
 .loginRegisterForm input[type="email"],
 .loginRegisterForm input[type="password"],
 .loginRegisterForm input[type="text"]:focus {
-    color: var(--darkGreenColor);
+  color: var(--darkGreenColor);
 }
 
 .button-submit {
-    background-color: var(--whiteColor);
-    color: var(--darkGreenColor);
-    border: 1px solid var(--darkGreenColor); 
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-top: 32px;
-    margin-bottom: 18px;
-    transition: background-color 0.3s, color 0.3s;
+  background-color: var(--whiteColor);
+  color: var(--darkGreenColor);
+  border: 1px solid var(--darkGreenColor);
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 32px;
+  margin-bottom: 18px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .button-submit:hover {
-    background-color: var(--darkGreenColor);
-    color: var(--whiteColor);
+  background-color: var(--darkGreenColor);
+  color: var(--whiteColor);
 }
 
 .button-register {
-    background-color: var(--whiteColor);
-    width: 373px;
-    height: 35px;
-    color: var(--darkGreenColor);
-    padding: 5px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-top: 17px;
-    margin-bottom: 10px;
-    border: 1px solid var(--darkGreenColor); 
-    transition: background-color 0.3s, color 0.3s;
+  background-color: var(--whiteColor);
+  width: 373px;
+  height: 35px;
+  color: var(--darkGreenColor);
+  padding: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 17px;
+  margin-bottom: 10px;
+  border: 1px solid var(--darkGreenColor);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .button-register:hover {
-    background-color: var(--darkGreenColor);
-    color: var(--lightGreenColor);
+  background-color: var(--darkGreenColor);
+  color: var(--lightGreenColor);
 }
 
 .registerText {
-    margin-top: 12px;
-    font-size: 0.9em;
-    font-weight: normal;
-    text-decoration: none;
-    color: var(--fontColor);
+  margin-top: 12px;
+  font-size: 0.9em;
+  font-weight: normal;
+  text-decoration: none;
+  color: var(--fontColor);
 }
 
 .registerText:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .arrowProsseguir {
-    color: var(--colorArrow);
-    width: 11px;
-    padding-left: 12px;
+  color: var(--colorArrow);
+  width: 11px;
+  padding-left: 12px;
 }
 
 .error {
-    font-family: var(--fontText);
-    color: var(--colorRed);
-    font-size:10px;
-    padding: 0;
-    margin: 0;
+  font-family: var(--fontText);
+  color: var(--colorRed);
+  font-size: 10px;
+  padding: 0;
+  margin: 0;
 }
 
 .selectInput {
-    border-radius: 12px;
-    width: 340px;
-    height: 40px;
-    padding: 10px;
+  border-radius: 12px;
+  width: 340px;
+  height: 40px;
+  padding: 10px;
 }
 
 .footerCard {
-    font-size: 12px;
-    color: var(--placeholderFontColor);
-    display: flex;
-    margin-top: 15px;
-    display: block;
+  font-size: 12px;
+  color: var(--placeholderFontColor);
+  display: flex;
+  margin-top: 15px;
+  display: block;
 }
 
 .footerCard input {
-    margin-right: 5px;
-    margin-left: 55px;
+  margin-right: 5px;
+  margin-left: 55px;
 }
 
 @media (max-width: 768px) {
-    .loginRegisterTitleContainer h1 {
-        font-size: 1.0em;
-    }
-    
-    .loginRegisterTitleContainer {
-        width: 120px;
-    }
+  .loginRegisterTitleContainer h1 {
+    font-size: 1em;
+  }
 
-    .button-register {
-        width: 173px;
-        /* margin-left: 8px; */
-    }
+  .loginRegisterTitleContainer {
+    width: 120px;
+  }
 
-    .selectInput {
-        width: 200px;
-    }
+  .button-register {
+    width: 173px;
+    /* margin-left: 8px; */
+  }
 
-    .footerCard input {
-        margin-left: 10px;
-    }
+  .selectInput {
+    width: 200px;
+  }
 
-    .footerCard {
-        font-size: 10px;
-    }
+  .footerCard input {
+    margin-left: 10px;
+  }
+
+  .footerCard {
+    font-size: 10px;
+  }
 }
