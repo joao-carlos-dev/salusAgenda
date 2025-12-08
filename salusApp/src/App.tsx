@@ -21,9 +21,9 @@ function App() {
           element={<SchedulingProfessional />}
         />
         <Route path="/configure-hours" element={<ConfigureHours />} />
-        <Route path="/registerpatient" element={<RegisterFormPatient />} />
+        <Route path="/registerpatient/:linkId" element={<RegisterFormPatient />} />
         {/* <Route path="/schedulingregister" element={<SchedulingRegister />} /> */}
-        <Route path="/agendar/:linkId" element={<PatientBooking />} />
+        <Route path="/agendar" element={<PatientBooking/>} />
       </Routes>
     </Router>
   );
