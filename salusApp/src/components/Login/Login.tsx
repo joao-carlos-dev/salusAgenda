@@ -31,7 +31,6 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-// Tipo de usuário para controle da tela
 type UserType = "professional" | "patient";
 
 const Login = () => {
@@ -57,7 +56,6 @@ const Login = () => {
     try {
       let response;
 
-      // 1. CHAMA A API CORRETA COM BASE NA ABA SELECIONADA
       if (userType === "professional") {
         response = await LoginAPI(data);
       } else {
@@ -79,30 +77,12 @@ const Login = () => {
         ) {
           const dataToSave = response.data.user || response.data;
           sessionStorage.setItem("userData", JSON.stringify(dataToSave));
-        } else {
-          // Fallback: Tenta decodificar do token se a resposta vier vazia
-          try {
-            const decoded = jwtDecode<TokenPayload>(response.data.token);
-            sessionStorage.setItem(
-              "userData",
-              JSON.stringify({
-                id: decoded.id || decoded.sub,
-                email: decoded.email || decoded.sub,
-              })
-            );
-          } catch {
-            console.log("error")
-          }
         }
+        // console.log("Token", response.data.token);
+        // navigate("/schedulingProfessional");
 
-        // 2. LÓGICA DE REDIRECIONAMENTO INTELIGENTE (O PULO DO GATO)
-        const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
-
-        // Se existe uma URL salva E o usuário é paciente (fluxo de agendamento)
-        if (redirectUrl && userType === "patient") {
-          console.log(" Redirecionando de volta para:", redirectUrl);
-          sessionStorage.removeItem("redirectAfterLogin"); // Limpa para não usar de novo
-          navigate(redirectUrl); // Volta para a tela do médico (/agendar/uuid)
+        if (userType === "professional") {
+          navigate("/schedulingProfessional");
         } else {
           // Fluxo normal (Dashboard)
           if (userType === "professional") {
@@ -164,18 +144,8 @@ const Login = () => {
             </button>
             <button
               type="button"
+              className={userType == "professional" ? "active" : ""}
               onClick={() => setUserType("professional")}
-              style={{
-                flex: 1,
-                padding: "12px",
-                border: "none",
-                background: userType === "professional" ? "#007bff" : "#f1f3f5",
-                color: userType === "professional" ? "white" : "#666",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "600",
-                transition: "all 0.2s",
-              }}
             >
               Sou Profissional
             </button>
@@ -233,16 +203,8 @@ const Login = () => {
           </form>
         </div>
 
-        {/* Link de cadastro muda conforme a aba selecionada */}
-        <Link
-          to={userType === "professional" ? "/register" : "/register-patient"}
-          className="registerText"
-        >
-          Ainda não tem uma conta?{" "}
-          <strong>
-            Cadastre-se como{" "}
-            {userType === "patient" ? "Paciente" : "Profissional"}
-          </strong>
+        <Link to={userType === "professional" ? "/register" : "/registerpatient"} className="registerText">
+            Ainda não tem uma conta?<strong>Registre-se como {userType === "patient" ? "Paciente" : "Profissional"}</strong>
         </Link>
       </section>
     </>

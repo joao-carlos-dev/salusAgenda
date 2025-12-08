@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-import {
-  ValidateConsultationLinkApi,
-  GetProfessionalDataById,
-  GetProfessionalHoursAPI,
-  SchedulingRegisterApi,
-  type ScheduleRequestDto,
+import {useNavigate } from "react-router-dom";
+import { 
+
+    GetProfessionalDataById, 
+    GetProfessionalHoursAPI,
+    SchedulingRegisterApi,
+    type ScheduleRequestDto
 } from "../../services/salusApi";
 import "./PatientBooking.css";
 
@@ -23,129 +22,67 @@ interface ProfessionalData {
 }
 
 const PatientBooking = () => {
-  const { linkId } = useParams();
-  const navigate = useNavigate();
+    
+    const navigate = useNavigate();
+    
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [doctor, setDoctor] = useState<ProfessionalData | null>(null);
+    const [professionalId, setProfessionalId] = useState("");
+    const [availableHours, setAvailableHours] = useState<string[]>([]);
+    
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedTime, setSelectedTime] = useState("");
+    const [bookingNote, setBookingNote] = useState("");
+    const [patientId, setPatientId] = useState(""); 
 
-  // Estados de Controle
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [step, setStep] = useState<"auth-gate" | "booking">("auth-gate");
+    useEffect(() => {
+        const validateAndFetch = async () => {
+            try {
+                const profId = sessionStorage.getItem("profId")!;
+                const docResponse = await GetProfessionalDataById(profId);
+                setDoctor(docResponse.data as ProfessionalData);
+                setPatientId(sessionStorage.getItem("idPatient")!)
+                const hoursResponse = await GetProfessionalHoursAPI(profId);
+                
+                let hours = [];
+                if (Array.isArray(hoursResponse.data)) hours = hoursResponse.data;
+                else if (typeof hoursResponse.data === 'object') hours = Object.keys(hoursResponse.data);
+                
+                setAvailableHours(hours.sort());
 
-  // Dados
-  const [doctorName, setDoctorName] = useState("");
-  const [doctorExpertise, setDoctorExpertise] = useState("");
-  const [professionalId, setProfessionalId] = useState("");
-  const [availableHours, setAvailableHours] = useState<string[]>([]);
+                const savedData = sessionStorage.getItem("userData");
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    setPatientId(parsed.id || parsed.userId || "");
+                }
 
-  // Inputs do Agendamento
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
-  const [description, setDescription] = useState("");
-  const [patientId, setPatientId] = useState("");
-
-  useEffect(() => {
-    const initPage = async () => {
-      if (!linkId) return;
-
-      try {
-        // 1. Valida Link (Público)
-        const validateResponse = await ValidateConsultationLinkApi(linkId);
-        const profId =
-          validateResponse.data.professionalId ||
-          validateResponse.data.id ||
-          validateResponse.data;
-
-        if (!profId) throw new Error("ID do médico inválido.");
-        setProfessionalId(profId);
-
-        // 2. Busca Dados Básicos do Médico (Para mostrar no cartão de boas-vindas)
-        const docResponse = await GetProfessionalDataById(profId);
-        const docData = docResponse.data as ProfessionalData;
-
-        const pData = docData.professionalData || {};
-        const name = pData.name || docData.name || "Doutor(a)";
-        const expertise =
-          pData.expertise || docData.expertise || "Clínico Geral";
-
-        setDoctorName(name);
-        setDoctorExpertise(expertise);
-
-        // 3. Verifica se já está logado
-        const savedData = sessionStorage.getItem("userData");
-        if (savedData) {
-          try {
-            const parsed = JSON.parse(savedData);
-            const pId = parsed.id || parsed.userId || parsed.personalData?.id;
-
-            if (pId) {
-              setPatientId(pId);
-              setStep("booking"); // Já logado? Vai direto pra agenda
-
-              // Se já logado, busca os horários agora
-              fetchHours(profId);
+            } catch (err) {
+                console.error(err);
+                setError("Erro ao agendar consulta, tente novamente mais tarde!.");
+            } finally {
+                setLoading(false);
             }
-          } catch {
-            console.log("error");
-          }
+        };
+
+        validateAndFetch();
+    }, []);
+
+    const handleBooking = async () => {
+        if (!patientId) {
+            alert("Você precisa fazer login como paciente para agendar.");
+            // Salva a URL para voltar depois do login
+            sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+            navigate("/"); // Vai para login
+            return;
         }
-      } catch (err) {
-        const error = err as AxiosError;
-        console.error("Erro:", err);
-        if (error.response?.status === 404 || error.response?.status === 400) {
-          setError("Link expirado ou inválido.");
-        } else {
-          setError("Erro ao carregar informações.");
+        if (!selectedTime) {
+            alert("Selecione um horário.");
+            return;
         }
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    initPage();
-  }, [linkId]);
-
-  // Função separada para buscar horários (só chama se for mostrar a agenda)
-  const fetchHours = async (profId: string) => {
-    try {
-      const hoursResponse = await GetProfessionalHoursAPI(profId);
-      let hoursList: string[] = [];
-      const hData = hoursResponse.data;
-
-      if (Array.isArray(hData)) {
-        hoursList = hData;
-      } else if (hData && typeof hData === "object") {
-        if (hData.hours && Array.isArray(hData.hours)) hoursList = hData.hours;
-        else hoursList = Object.keys(hData);
-      }
-      setAvailableHours(hoursList.map((h) => h.substring(0, 5)).sort());
-    } catch (e) {
-      console.error("Erro ao buscar horários", e);
-    }
-  };
-
-  // --- AÇÕES DE NAVEGAÇÃO ---
-
-  const handleGoToLogin = () => {
-    // Salva a URL atual para voltar após login
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-    navigate("/"); // Rota de Login
-  };
-
-  const handleGoToRegister = () => {
-    // Salva a URL atual para voltar após cadastro -> login
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-    // Ajuste a rota abaixo para onde fica seu cadastro de paciente
-    navigate("/register-patient");
-  };
-
-  // --- AÇÃO DE AGENDAR ---
-
-  const handleConfirmBooking = async () => {
-    if (!selectedTime) return alert("Selecione um horário.");
-
-    const dateStr = selectedDate.toISOString().split("T")[0];
-    const timeStr =
-      selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
+        const dateStr = selectedDate.toISOString().split('T')[0];
+        const timeStr = selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
 
        navigate('/scheduleregister', {
         state: {
@@ -163,16 +100,15 @@ const PatientBooking = () => {
       professionalUserId: professionalId,
     };
 
-    try {
-      await SchedulingRegisterApi(payload);
-      alert("Consulta agendada com sucesso!");
-      sessionStorage.removeItem("redirectAfterLogin");
-      navigate("/home");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao agendar. Tente novamente.");
-    }
-  };
+        try {
+            await SchedulingRegisterApi(payload);
+            alert("Consulta agendada com sucesso!");
+            navigate("/"); // Redireciona para home do paciente
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao agendar consulta.");
+        }
+    };
 
   if (loading) return <div className="pb-loading">Carregando...</div>;
 
