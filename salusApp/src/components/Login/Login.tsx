@@ -22,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-type UserType = "prefessional" | "patient";
+type UserType = "professional" | "patient";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const Login = () => {
     try {
       let response;
 
-      if (userType === "prefessional") {
+      if (userType === "professional") {
         response = await LoginAPI(data);
       } else {
         response = await LoginPatient(data);
@@ -74,7 +74,7 @@ const Login = () => {
         // console.log("Token", response.data.token);
         // navigate("/schedulingProfessional");
 
-        if (userType === "prefessional") {
+        if (userType === "professional") {
           navigate("/schedulingProfessional");
         } else {
           navigate("/schedulingregister");
@@ -112,8 +112,8 @@ const Login = () => {
 
             <button
               type="button"
-              className={userType == "prefessional" ? "active" : ""}
-              onClick={() => setUserType("prefessional")}
+              className={userType == "professional" ? "active" : ""}
+              onClick={() => setUserType("professional")}
             >
               Profissional
             </button>
@@ -170,8 +170,8 @@ const Login = () => {
           </form>
         </div>
 
-        <Link to={userType === "prefessional" ? "/register" : "/registerpatient"} className="registerText">
-            Ainda não tem uma conta?<strong>Registre-se com {userType === "patient" ? "Paciente" : "Profissional"}</strong>
+        <Link to={userType === "professional" ? "/register" : "/registerpatient"} className="registerText">
+            Ainda não tem uma conta?<strong>Registre-se como {userType === "patient" ? "Paciente" : "Profissional"}</strong>
         </Link>
     
       </section>

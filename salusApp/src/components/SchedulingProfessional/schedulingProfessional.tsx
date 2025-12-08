@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import {
   GenerateConsultationLinkApi,
   GetProfessionalDataById,
@@ -176,20 +175,10 @@ const SchedulingProfessional = () => {
     try {
       const response = await GenerateConsultationLinkApi(userId);
       console.log("Link gerado:", response.data);
-
-      const urlString =
-        typeof response.data === "string"
-          ? response.data
-          : response.data.url || response.data.link;
-
-      const parts = urlString.split("/");
-      const linkId = parts[parts.length - 1];
-
-      const frontendLink = `${window.location.origin}/agendar/${linkId}`;
-
-      navigator.clipboard.writeText(frontendLink);
+      const link = response.data.url;
+       await navigator.clipboard.writeText(link);
       alert(
-        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${frontendLink}`
+        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${link}`
       );
     } catch (error) {
       console.error("Erro ao gerar link:", error);
@@ -202,7 +191,6 @@ const SchedulingProfessional = () => {
     const token = sessionStorage.getItem("token");
     let currentId = "";
     let tokenName = "";
-
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
@@ -211,9 +199,6 @@ const SchedulingProfessional = () => {
           parsed.userId ||
           parsed.user?.id ||
           parsed.personalData?.id;
-
-        console.log("Parsed user data from sessionStorage:", currentId, parsed);
-
         if (currentId) {
           setUserId(currentId);
         } else {
@@ -223,44 +208,10 @@ const SchedulingProfessional = () => {
         console.error("Error parsing user data from sessionStorage:", e);
       }
     }
-
-    if (token) {
-      try {
-        const decoded = jwtDecode<TokenPayload>(token);
-        console.log("Decoded token:", decoded);
-
-        if (decoded.name) {
-          tokenName = decoded.name;
-          setDoctorName(tokenName);
-        } else if (decoded.sub) {
-          setDoctorName(decoded.sub);
-        }
-      } catch (error) {
-        console.error("Error decoding JWT token:", error);
-      }
-    }
-
     const fetchData = async () => {
-      if (!currentId && token) {
-        try {
-          const decoded = jwtDecode<TokenPayload>(token);
-          if (decoded.id && typeof decoded.id === "string") {
-            currentId = decoded.id;
-          }
-        } catch {
-          console.error("Error decoding token to get user ID.");
-        }
-      }
-
-      if (!currentId) {
-        console.error("No user ID available to fetch professional data.");
-        return;
-      }
-
       try {
         const response = await GetProfessionalDataById(currentId);
         const data = response.data as ProfessionalResponse;
-
         if (data) {
           const pData = data.professionalData || {};
           const realName = pData.name || data.name || tokenName || "Doutor(a)";
@@ -268,7 +219,6 @@ const SchedulingProfessional = () => {
             pData.occupation || data.occupation || "Médico(a)";
           const realExpertise =
             pData.expertise || data.expertise || "Clínico Geral";
-
           setDoctorName(realName);
           setDoctorOccupation(realOccupation);
           setDoctorExpertise(realExpertise);

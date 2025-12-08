@@ -4,7 +4,7 @@ import type { LoginData } from '../interfaces/LoginData';
 import type { RegisterPayload } from '../interfaces/RegisterPayload';
 
 const apiClient = axios.create({
-     baseURL: '',
+     
      headers: {
          'Content-Type': 'application/json'
      }
@@ -83,7 +83,7 @@ export const GetProfessionalHoursAPI = (id: string) => {
 }
 
 export const RegisterPatient = (payload: RegisterPayload) => {
-  return apiClient.post('patient/register', payload)
+  return apiClient.post(`/patient/register`, payload)
 }
 
 export const LoginPatient = (loginData: LoginData) => {
@@ -98,8 +98,8 @@ export const GenerateConsultationLinkApi = (professionalId: string) => {
   return apiClient.post('consultationLink/generate', { professionalId });
 }
 
-export const ValidateConsultationLinkApi = (linkkId: string) => {
-  return apiClient.get(`consultationLink/validate/${linkkId}`);
+export const ValidateConsultationLinkApi = (linkId: string) => {
+  return apiClient.get(`/consultationLink/validate/${linkId}`);
 }
 
 export const FetchShareBySymbol = async (symbol: string) => {

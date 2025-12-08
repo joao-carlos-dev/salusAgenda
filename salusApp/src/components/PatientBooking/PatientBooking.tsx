@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { 
-    ValidateConsultationLinkApi, 
+
     GetProfessionalDataById, 
     GetProfessionalHoursAPI,
     SchedulingRegisterApi,
@@ -18,7 +18,7 @@ interface ProfessionalData {
 }
 
 const PatientBooking = () => {
-    const { linkId } = useParams();
+    
     const navigate = useNavigate();
     
     const [loading, setLoading] = useState(true);
@@ -30,33 +30,23 @@ const PatientBooking = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState("");
     const [bookingNote, setBookingNote] = useState("");
-    const [patientId, setPatientId] = useState(""); // Deve vir do login do paciente
+    const [patientId, setPatientId] = useState(""); 
 
-    // 1. Valida o Link ao abrir a página
     useEffect(() => {
         const validateAndFetch = async () => {
-            if (!linkId) return;
             try {
-                // Valida o link e recebe o ID do profissional
-                const response = await ValidateConsultationLinkApi(linkId);
-                // Ajuste conforme seu DTO: response.data.professionalId ou direto
-                const profId = response.data.professionalId || response.data; 
-                setProfessionalId(profId);
-
-                // Busca dados do médico
+                const profId = sessionStorage.getItem("profId")!;
                 const docResponse = await GetProfessionalDataById(profId);
                 setDoctor(docResponse.data as ProfessionalData);
-
-                // Busca horários do médico
+                setPatientId(sessionStorage.getItem("idPatient")!)
                 const hoursResponse = await GetProfessionalHoursAPI(profId);
-                // Tratamento para array ou objeto
+                
                 let hours = [];
                 if (Array.isArray(hoursResponse.data)) hours = hoursResponse.data;
                 else if (typeof hoursResponse.data === 'object') hours = Object.keys(hoursResponse.data);
                 
                 setAvailableHours(hours.sort());
 
-                // Verifica se o paciente está logado
                 const savedData = sessionStorage.getItem("userData");
                 if (savedData) {
                     const parsed = JSON.parse(savedData);
@@ -65,14 +55,14 @@ const PatientBooking = () => {
 
             } catch (err) {
                 console.error(err);
-                setError("Este link de agendamento é inválido ou expirou.");
+                setError("Erro ao agendar consulta, tente novamente mais tarde!.");
             } finally {
                 setLoading(false);
             }
         };
 
         validateAndFetch();
-    }, [linkId]);
+    }, []);
 
     const handleBooking = async () => {
         if (!patientId) {
@@ -82,7 +72,6 @@ const PatientBooking = () => {
             navigate("/"); // Vai para login
             return;
         }
-
         if (!selectedTime) {
             alert("Selecione um horário.");
             return;
@@ -103,7 +92,7 @@ const PatientBooking = () => {
         try {
             await SchedulingRegisterApi(payload);
             alert("Consulta agendada com sucesso!");
-            navigate("/home"); // Redireciona para home do paciente
+            navigate("/"); // Redireciona para home do paciente
         } catch (err) {
             console.error(err);
             alert("Erro ao agendar consulta.");
