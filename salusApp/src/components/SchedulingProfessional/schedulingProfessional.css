@@ -1,3 +1,42 @@
+.scheduling-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.scheduling-header h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.scheduling-info {
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid #bbdefb;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 600;
+    color: #007bff;
+}
+
+.info-item i {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+}
+
 .notHours {
   text-align: center;
   padding: 40px;

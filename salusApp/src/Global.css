@@ -1,3 +1,22 @@
+.pb-container{
+ display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 30px;
+}
+
+.pb-container .btn-login {
+  background-color: var(--darkGreenColor);
+  color: var(--lightGreenColor);
+  border: 1px solid var(--lightGreenColor);
+}
+
+.pb-container .btn-register {
+  color: var(--darkGreenColor);
+  border: 1px solid var(--lightGreenColor);
+}
+
 /* Constantes */
 :root {
     --fontText: "Inter", sans-serif;

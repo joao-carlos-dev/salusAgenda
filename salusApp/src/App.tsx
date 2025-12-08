@@ -7,6 +7,7 @@ import SchedulingProfessional from "./components/SchedulingProfessional/Scheduli
 import ConfigureHours from "./components/ConfigureHours/ConfigureHours";
 import { RegisterFormPatient } from "./components/RegisterFormPatient/RegisterFormPatient";
 import PatientBooking from "./components/PatientBooking/PatientBooking";
+import SchedulingRegister from "./components/SchedulingRegister/SchedulingRegister";
 // import SchedulingRegister from "./components/SchedulingRegister/SchedulingRegister";
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         />
         <Route path="/configure-hours" element={<ConfigureHours />} />
         <Route path="/registerpatient" element={<RegisterFormPatient />} />
-        {/* <Route path="/schedulingregister" element={<SchedulingRegister />} /> */}
+        <Route path="/schedulingregister" element={<SchedulingRegister />} />
         <Route path="/agendar/:linkId" element={<PatientBooking />} />
       </Routes>
     </Router>

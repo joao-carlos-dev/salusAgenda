@@ -37,7 +37,6 @@ interface Consultation {
   complaint: string;
 }
 
-// --- FUNÇÕES AUXILIARES DE DATA ---
 const getLocalISODate = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -73,7 +72,7 @@ const mockSchedule: Record<string, Consultation[]> = {
       complaint: "Enxaqueca constante",
     },
   ],
-  // AMANHÃ: Tem 1 consulta
+
   [getLocalISODate(tomorrow)]: [
     {
       id: 3,
@@ -83,7 +82,7 @@ const mockSchedule: Record<string, Consultation[]> = {
       complaint: "Check-up de rotina",
     },
   ],
-  // DEPOIS DE AMANHÃ: Tem 2 consultas
+
   [getLocalISODate(dayAfter)]: [
     {
       id: 4,
@@ -112,11 +111,9 @@ const SchedulingProfessional = () => {
   const [doctorExpertise, setDoctorExpertise] = useState("");
   const [doctorOccupation, setDoctorOccupation] = useState("");
 
-  // 1. ESTADO DA DATA SELECIONADA (Começa com hoje)
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [configuredHours, setConfiguredHours] = useState<string[]>([]);
 
-  // 2. FUNÇÕES DE NAVEGAÇÃO
   const handleNextDay = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(selectedDate.getDate() + 1);
@@ -172,25 +169,36 @@ const SchedulingProfessional = () => {
   };
 
   const handleGenerateLink = async () => {
-    if (!userId) return;
+    if (!userId) {
+      alert("Erro: ID do profissional não encontrado.");
+      return;
+    }
+
     try {
       const response = await GenerateConsultationLinkApi(userId);
-      console.log("Link gerado:", response.data);
+      console.log("Link (Raw Back-end):", response.data);
 
-      const urlString =
-        typeof response.data === "string"
-          ? response.data
-          : response.data.url || response.data.link;
+      let rawString = "";
 
-      const parts = urlString.split("/");
+      if (typeof response.data === "string") {
+        rawString = response.data;
+      } else if (response.data?.url) {
+        rawString = response.data.url; 
+      } else if (response.data?.link) {
+        rawString = response.data.link; 
+      } else {
+        rawString = String(response.data);
+      }
+      
+      const parts = rawString.split("/");
       const linkId = parts[parts.length - 1];
 
       const frontendLink = `${window.location.origin}/agendar/${linkId}`;
 
-      navigator.clipboard.writeText(frontendLink);
-      alert(
-        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${frontendLink}`
-      );
+      console.log("Link Final Gerado:", frontendLink);
+
+      await navigator.clipboard.writeText(frontendLink);
+      alert(`Link de agendamento copiado!\n\n${frontendLink}`);
     } catch (error) {
       console.error("Erro ao gerar link:", error);
       alert("Erro ao gerar link de agendamento.");
@@ -274,9 +282,9 @@ const SchedulingProfessional = () => {
           setDoctorExpertise(realExpertise);
         }
 
-        console.log("🕒 Buscando horários...");
+        console.log("Buscando horários...");
         const responseHours = await GetProfessionalHoursAPI(currentId);
-        console.log("📦 Resposta Horários:", responseHours.data);
+        console.log("Resposta Horários:", responseHours.data);
 
         let hoursList: string[] = [];
 
@@ -292,9 +300,9 @@ const SchedulingProfessional = () => {
         if (hoursList.length > 0) {
           const sorted = hoursList.sort();
           setConfiguredHours(sorted);
-          console.log("✅ Horários processados:", sorted);
+          console.log("Horários processados:", sorted);
         } else {
-          console.warn("⚠️ Lista de horários vazia após processamento.");
+          console.warn("Lista de horários vazia após processamento.");
         }
       } catch (error) {
         console.error("Erro ao buscar dados do perfil:", error);
@@ -436,7 +444,6 @@ const SchedulingProfessional = () => {
               className="bi bi-share-fill"
               title="Gerar Link de Agendamento"
               onClick={handleGenerateLink}
-              style={{ cursor: "pointer", color: "#007bff" }}
             ></i>
           </div>
         </div>

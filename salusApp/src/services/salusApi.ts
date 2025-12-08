@@ -95,11 +95,11 @@ export const SchedulingRegisterApi = (payload: ScheduleRequestDto) => {
 }
 
 export const GenerateConsultationLinkApi = (professionalId: string) => {
-  return apiClient.post('consultationLink/generate', { professionalId });
+  return apiClient.post('/consultationLink/generate', { professionalId });
 }
 
 export const ValidateConsultationLinkApi = (linkkId: string) => {
-  return apiClient.get(`consultationLink/validate/${linkkId}`);
+  return apiClient.get(`/consultationLink/validate/${linkkId}`);
 }
 
 export const FetchShareBySymbol = async (symbol: string) => {

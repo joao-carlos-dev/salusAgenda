@@ -1,175 +1,291 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-    ValidateConsultationLinkApi, 
-    GetProfessionalDataById, 
-    GetProfessionalHoursAPI,
-    SchedulingRegisterApi,
-    type ScheduleRequestDto
+import { AxiosError } from "axios";
+import {
+  ValidateConsultationLinkApi,
+  GetProfessionalDataById,
+  GetProfessionalHoursAPI,
+  SchedulingRegisterApi,
+  type ScheduleRequestDto,
 } from "../../services/salusApi";
 import "./PatientBooking.css";
 
-// Reutilizando interfaces ou definindo locais
 interface ProfessionalData {
+  professionalData?: {
     name?: string;
+    email?: string;
     occupation?: string;
     expertise?: string;
-    personalData?: { name?: string; }
+  };
+  name?: string;
+  occupation?: string;
+  expertise?: string;
 }
 
 const PatientBooking = () => {
-    const { linkId } = useParams();
-    const navigate = useNavigate();
-    
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [doctor, setDoctor] = useState<ProfessionalData | null>(null);
-    const [professionalId, setProfessionalId] = useState("");
-    const [availableHours, setAvailableHours] = useState<string[]>([]);
-    
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedTime, setSelectedTime] = useState("");
-    const [bookingNote, setBookingNote] = useState("");
-    const [patientId, setPatientId] = useState(""); // Deve vir do login do paciente
+  const { linkId } = useParams();
+  const navigate = useNavigate();
 
-    // 1. Valida o Link ao abrir a página
-    useEffect(() => {
-        const validateAndFetch = async () => {
-            if (!linkId) return;
-            try {
-                // Valida o link e recebe o ID do profissional
-                const response = await ValidateConsultationLinkApi(linkId);
-                // Ajuste conforme seu DTO: response.data.professionalId ou direto
-                const profId = response.data.professionalId || response.data; 
-                setProfessionalId(profId);
+  // Estados de Controle
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [step, setStep] = useState<"auth-gate" | "booking">("auth-gate");
 
-                // Busca dados do médico
-                const docResponse = await GetProfessionalDataById(profId);
-                setDoctor(docResponse.data as ProfessionalData);
+  // Dados
+  const [doctorName, setDoctorName] = useState("");
+  const [doctorExpertise, setDoctorExpertise] = useState("");
+  const [professionalId, setProfessionalId] = useState("");
+  const [availableHours, setAvailableHours] = useState<string[]>([]);
 
-                // Busca horários do médico
-                const hoursResponse = await GetProfessionalHoursAPI(profId);
-                // Tratamento para array ou objeto
-                let hours = [];
-                if (Array.isArray(hoursResponse.data)) hours = hoursResponse.data;
-                else if (typeof hoursResponse.data === 'object') hours = Object.keys(hoursResponse.data);
-                
-                setAvailableHours(hours.sort());
+  // Inputs do Agendamento
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [patientId, setPatientId] = useState("");
 
-                // Verifica se o paciente está logado
-                const savedData = sessionStorage.getItem("userData");
-                if (savedData) {
-                    const parsed = JSON.parse(savedData);
-                    setPatientId(parsed.id || parsed.userId || "");
-                }
+  useEffect(() => {
+    const initPage = async () => {
+      if (!linkId) return;
 
-            } catch (err) {
-                console.error(err);
-                setError("Este link de agendamento é inválido ou expirou.");
-            } finally {
-                setLoading(false);
+      try {
+        // 1. Valida Link (Público)
+        const validateResponse = await ValidateConsultationLinkApi(linkId);
+        const profId =
+          validateResponse.data.professionalId ||
+          validateResponse.data.id ||
+          validateResponse.data;
+
+        if (!profId) throw new Error("ID do médico inválido.");
+        setProfessionalId(profId);
+
+        // 2. Busca Dados Básicos do Médico (Para mostrar no cartão de boas-vindas)
+        const docResponse = await GetProfessionalDataById(profId);
+        const docData = docResponse.data as ProfessionalData;
+
+        const pData = docData.professionalData || {};
+        const name = pData.name || docData.name || "Doutor(a)";
+        const expertise =
+          pData.expertise || docData.expertise || "Clínico Geral";
+
+        setDoctorName(name);
+        setDoctorExpertise(expertise);
+
+        // 3. Verifica se já está logado
+        const savedData = sessionStorage.getItem("userData");
+        if (savedData) {
+          try {
+            const parsed = JSON.parse(savedData);
+            const pId = parsed.id || parsed.userId || parsed.personalData?.id;
+
+            if (pId) {
+              setPatientId(pId);
+              setStep("booking"); // Já logado? Vai direto pra agenda
+
+              // Se já logado, busca os horários agora
+              fetchHours(profId);
             }
-        };
-
-        validateAndFetch();
-    }, [linkId]);
-
-    const handleBooking = async () => {
-        if (!patientId) {
-            alert("Você precisa fazer login como paciente para agendar.");
-            // Salva a URL para voltar depois do login
-            sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-            navigate("/"); // Vai para login
-            return;
+          } catch {
+            console.log("error");
+          }
         }
-
-        if (!selectedTime) {
-            alert("Selecione um horário.");
-            return;
+      } catch (err) {
+        const error = err as AxiosError;
+        console.error("Erro:", err);
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          setError("Link expirado ou inválido.");
+        } else {
+          setError("Erro ao carregar informações.");
         }
-
-        const dateStr = selectedDate.toISOString().split('T')[0];
-        const timeStr = selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
-
-        const payload: ScheduleRequestDto = {
-            consultationDate: dateStr,
-            consultationTime: timeStr,
-            consultationDescription: bookingNote || "Agendamento via Link",
-            consultationCategoryId: 1, // Padrão
-            patientId: patientId,
-            professionalUserId: professionalId
-        };
-
-        try {
-            await SchedulingRegisterApi(payload);
-            alert("Consulta agendada com sucesso!");
-            navigate("/home"); // Redireciona para home do paciente
-        } catch (err) {
-            console.error(err);
-            alert("Erro ao agendar consulta.");
-        }
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (loading) return <div className="loading-screen">Validando link...</div>;
-    if (error) return <div className="error-screen"><i className="bi bi-x-circle"></i> {error}</div>;
+    initPage();
+  }, [linkId]);
 
-    const doctorName = doctor?.name || doctor?.personalData?.name || "Doutor(a)";
+  // Função separada para buscar horários (só chama se for mostrar a agenda)
+  const fetchHours = async (profId: string) => {
+    try {
+      const hoursResponse = await GetProfessionalHoursAPI(profId);
+      let hoursList: string[] = [];
+      const hData = hoursResponse.data;
 
+      if (Array.isArray(hData)) {
+        hoursList = hData;
+      } else if (hData && typeof hData === "object") {
+        if (hData.hours && Array.isArray(hData.hours)) hoursList = hData.hours;
+        else hoursList = Object.keys(hData);
+      }
+      setAvailableHours(hoursList.map((h) => h.substring(0, 5)).sort());
+    } catch (e) {
+      console.error("Erro ao buscar horários", e);
+    }
+  };
+
+  // --- AÇÕES DE NAVEGAÇÃO ---
+
+  const handleGoToLogin = () => {
+    // Salva a URL atual para voltar após login
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    navigate("/"); // Rota de Login
+  };
+
+  const handleGoToRegister = () => {
+    // Salva a URL atual para voltar após cadastro -> login
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    // Ajuste a rota abaixo para onde fica seu cadastro de paciente
+    navigate("/register-patient");
+  };
+
+  // --- AÇÃO DE AGENDAR ---
+
+  const handleConfirmBooking = async () => {
+    if (!selectedTime) return alert("Selecione um horário.");
+
+    const dateStr = selectedDate.toISOString().split("T")[0];
+    const timeStr =
+      selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
+
+       navigate('/scheduleregister', {
+        state: {
+            date: selectedDate.toISOString().split('T')[0], 
+            time: selectedTime,                             
+            professionalId: professionalId                  
+        }
+    });
+    const payload: ScheduleRequestDto = {
+      consultationDate: dateStr,
+      consultationTime: timeStr,
+      consultationDescription: description || "Agendamento via Link",
+      consultationCategoryId: 1,
+      patientId: patientId,
+      professionalUserId: professionalId,
+    };
+
+    try {
+      await SchedulingRegisterApi(payload);
+      alert("Consulta agendada com sucesso!");
+      sessionStorage.removeItem("redirectAfterLogin");
+      navigate("/home");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao agendar. Tente novamente.");
+    }
+  };
+
+  if (loading) return <div className="pb-loading">Carregando...</div>;
+
+  if (error)
     return (
-        <div className="patient-booking-container">
-            <div className="doctor-header">
-                <h2>Agendar Consulta</h2>
-                <div className="doctor-info">
-                    <i className="bi bi-person-circle avatar"></i>
-                    <div>
-                        <h3>Dr(a). {doctorName}</h3>
-                        <span>{doctor?.expertise || "Médico"}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="calendar-section">
-                <label>Data:</label>
-                <input 
-                    type="date" 
-                    value={selectedDate.toISOString().split('T')[0]}
-                    onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                    min={new Date().toISOString().split('T')[0]}
-                />
-            </div>
-
-            <div className="slots-section">
-                <label>Horários Disponíveis:</label>
-                <div className="slots-grid">
-                    {availableHours.length > 0 ? availableHours.map(time => {
-                        const shortTime = time.substring(0, 5);
-                        return (
-                            <button 
-                                key={time}
-                                className={`slot-btn ${selectedTime === time ? 'active' : ''}`}
-                                onClick={() => setSelectedTime(time)}
-                            >
-                                {shortTime}
-                            </button>
-                        )
-                    }) : <p>Nenhum horário disponível.</p>}
-                </div>
-            </div>
-
-            <div className="notes-section">
-                <label>Observação (Opcional):</label>
-                <textarea 
-                    value={bookingNote}
-                    onChange={(e) => setBookingNote(e.target.value)}
-                    placeholder="Sente alguma dor? É retorno?"
-                />
-            </div>
-
-            <button className="confirm-btn" onClick={handleBooking} disabled={!selectedTime}>
-                Confirmar Agendamento
-            </button>
-        </div>
+      <div className="pb-error-container">
+        <i
+          className="bi bi-link-45deg"
+          style={{ fontSize: "3rem", color: "#dc3545" }}
+        ></i>
+        <h2>Link Inválido</h2>
+        <p>{error}</p>
+      </div>
     );
+
+  // --- TELA 1: GATE (LOGIN OU CADASTRO) ---
+  if (step === "auth-gate") {
+    return (
+      <div className="pb-container">
+        <div className="pb-card auth-card">
+          <div className="doctor-avatar">
+            <i className="bi bi-person-badge-fill"></i>
+          </div>
+          <h2>Agendar com Dr(a). {doctorName}</h2>
+          <p className="expertise">{doctorExpertise}</p>
+
+          <div className="divider"></div>
+
+          <p className="instruction">
+            Para acessar a agenda e marcar sua consulta, você precisa se
+            identificar.
+          </p>
+
+          <div className="auth-actions">
+            <button className="btn-login" onClick={handleGoToLogin}>
+              Já tenho conta (Entrar)
+            </button>
+            <button className="btn-register" onClick={handleGoToRegister}>
+              Não tenho cadastro (Criar Conta)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- TELA 2: AGENDA (BOOKING) ---
+  return (
+    <div className="pb-container">
+      <div className="pb-card">
+        <div className="pb-header">
+          <p>Agendamento com:</p>
+          <h2>Dr(a). {doctorName}</h2>
+          <span className="pb-badge">{doctorExpertise}</span>
+        </div>
+
+        <div className="pb-body">
+          <div className="pb-form-group">
+            <label>Data</label>
+            <input
+              type="date"
+              className="pb-input"
+              value={selectedDate.toISOString().split("T")[0]}
+              onChange={(e) => setSelectedDate(new Date(e.target.value))}
+              min={new Date().toISOString().split("T")[0]}
+            />
+          </div>
+
+          <div className="pb-form-group">
+            <label>Horários Disponíveis</label>
+            <div className="pb-slots-grid">
+              {availableHours.length > 0 ? (
+                availableHours.map((time) => (
+                  <button
+                    key={time}
+                    className={`pb-slot ${
+                      selectedTime === time ? "selected" : ""
+                    }`}
+                    onClick={() => setSelectedTime(time)}
+                  >
+                    {time}
+                  </button>
+                ))
+              ) : (
+                <p className="text-muted" style={{ gridColumn: "1/-1" }}>
+                  Nenhum horário disponível.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="pb-form-group">
+            <label>Observação</label>
+            <textarea
+              className="pb-input"
+              rows={2}
+              placeholder="Motivo..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <button
+            className="pb-confirm-btn"
+            onClick={handleConfirmBooking}
+            disabled={!selectedTime}
+          >
+            Confirmar Agendamento
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PatientBooking;
