@@ -1,121 +1,117 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 20px;
+/* Container principal - sem overlay e sem posição fixa */
+.scheduling-container {
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px; /* Limite de largura para não esticar demais */
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+  border: 1px solid #e0e0e0;
+  margin: 20px auto; /* Centraliza na página e dá espaço */
 }
 
-.modal-content {
-    background-color: white;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    animation: slideUp 0.3s ease;
+/* Cabeçalho */
+.scheduling-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
 }
 
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+.scheduling-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+/* Área de informações (Data/Hora) */
+.scheduling-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  font-weight: 600;
+  color: #007bff;
+  align-items: center;
 }
 
-.modal-header h3 {
-    margin: 0;
-    color: #333;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #666;
-}
-
-.modal-info {
-    background-color: #f8f9fa;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    display: flex;
-    gap: 15px;
-    font-weight: 600;
-    color: #007bff;
-}
-
+/* Grupos de formulário */
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-    color: #555;
-    font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #555;
+  font-weight: 600;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-    box-sizing: border-box; /* Garante que padding não estoure width */
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 .form-group textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
+/* Botões de ação */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
 }
 
 .btn-cancel {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    background-color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    color: #666;
+  flex: 1;
+  padding: 14px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: #f1f1f1;
 }
 
 .btn-confirm {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    background-color: #28a745;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
+  flex: 1;
+  padding: 14px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-confirm:hover {
+  background-color: #218838;
 }
 
 .btn-confirm:disabled {
-    background-color: #94d3a2;
-    cursor: not-allowed;
+  background-color: #94d3a2;
+  cursor: not-allowed;
 }

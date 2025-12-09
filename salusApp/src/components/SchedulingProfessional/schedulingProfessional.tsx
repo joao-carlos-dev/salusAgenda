@@ -10,7 +10,7 @@ import "./schedulingProfessional.css";
 import type { ScheduleData } from "../../interfaces/ScheduleData";
 import { FindAllSchedules } from "../../services/salusApi";
 
-// --- INTERFACES ---
+
 interface TokenPayload {
   sub: string;
   name?: string;
@@ -29,8 +29,6 @@ interface ProfessionalResponse {
   occupation?: string;
   expertise?: string;
 }
-
-// --- FUNÇÕES AUXILIARES DE DATA ---
 const getLocalISODate = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -60,11 +58,9 @@ const SchedulingProfessional = () => {
   const [doctorExpertise, setDoctorExpertise] = useState("");
   const [doctorOccupation, setDoctorOccupation] = useState("");
 
-  // 1. ESTADO DA DATA SELECIONADA (Começa com hoje)
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [configuredHours, setConfiguredHours] = useState<string[]>([]);
 
-  // 2. FUNÇÕES DE NAVEGAÇÃO
   const handleNextDay = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(selectedDate.getDate() + 1);
@@ -122,7 +118,11 @@ const SchedulingProfessional = () => {
   };
 
   const handleGenerateLink = async () => {
-    if (!userId) return;
+    if (!userId) {
+      alert("Erro: ID do profissional não encontrado.");
+      return;
+    }
+
     try {
       const response = await GenerateConsultationLinkApi(userId);
       console.log("Link gerado:", response.data);
@@ -182,9 +182,9 @@ const SchedulingProfessional = () => {
           setDoctorExpertise(realExpertise);
         }
 
-        console.log("🕒 Buscando horários...");
+        console.log("Buscando horários...");
         const responseHours = await GetProfessionalHoursAPI(currentId);
-        console.log("📦 Resposta Horários:", responseHours.data);
+        console.log("Resposta Horários:", responseHours.data);
 
         let hoursList: string[] = [];
 
@@ -197,9 +197,9 @@ const SchedulingProfessional = () => {
         if (hoursList.length > 0) {
           const sorted = hoursList.sort();
           setConfiguredHours(sorted);
-          console.log("✅ Horários processados:", sorted);
+          console.log("Horários processados:", sorted);
         } else {
-          console.warn("⚠️ Lista de horários vazia após processamento.");
+          console.warn("Lista de horários vazia após processamento.");
         }
       } catch (error) {
         console.error("Erro ao buscar dados do perfil:", error);
@@ -363,7 +363,6 @@ const SchedulingProfessional = () => {
               className="bi bi-share-fill"
               title="Gerar Link de Agendamento"
               onClick={handleGenerateLink}
-              style={{ cursor: "pointer", color: "#007bff" }}
             ></i>
           </div>
         </div>

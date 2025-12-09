@@ -1,36 +1,3 @@
-.userTypeSelector {
-  display: flex;
-  background-color: var(--whiteColor);
-  border-radius: 8px;
-  padding: 4px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.userTypeSelector button {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--darkGreenColor);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.userTypeSelector button.active {
-  background-color: var(--whiteColor);
-  color: var(--lightGreenColor);
-  box-shadow: 0 2px 4px var(--darkGreenColor);
-  font-weight: 600;
-}
-
-.userTypeSelector button:hover:not(.active) {
-  background-color: var(--darkGreenColor);
-}
-
 .containerLoginRegister {
   display: flex;
   flex-direction: column;

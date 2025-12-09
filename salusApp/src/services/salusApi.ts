@@ -98,7 +98,7 @@ export const FindAllSchedules = (professionalId: string, date: string) => {
 }
 
 export const GenerateConsultationLinkApi = (professionalId: string) => {
-  return apiClient.post('consultationLink/generate', { professionalId });
+  return apiClient.post('/consultationLink/generate', { professionalId });
 }
 
 export const ValidateConsultationLinkApi = (linkId: string) => {
