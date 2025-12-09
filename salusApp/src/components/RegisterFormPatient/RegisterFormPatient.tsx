@@ -7,6 +7,7 @@ import { GetProfessionalDataById, GetProfessionalHoursAPI, RegisterPatient, Vali
 import isError from "../../Utils/isError";
 import PatientInformation from "../PatientInformation/PatientInformation";
 import PatientDemographicInformation from "../PatientDemographicInformation/PatientDemographicInformation";
+import axios from "axios";
 
 const initialData: FormData = {
   name: "",
@@ -108,13 +109,13 @@ export function RegisterFormPatient() {
     setIsLoading(true);
 
     try {
-      const response = await RegisterPatient(payload);
+        const response = await RegisterPatient(payload);
        console.log("✅ Resposta da API:", response.status, response.data);
       if (response.status === 201) {
         navigate("/agendar");
         sessionStorage.setItem("idPatient", response.data.idPatient)
       } else {
-        alert("Cadastro efetuado, mas status inesperado.");
+        alert("Cadastro efetuado, mas status inesperado." + axios.AxiosError);
       }
     } catch (e: unknown) {
       const erroMessage = isError(e) ? e.message : "An unknown error corrured";
