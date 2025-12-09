@@ -41,16 +41,9 @@ export interface ScheduleRequestDto {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
-        console.warn("Token expirado ou inválido. Redirecionando para login...");
-        
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("userData");
-        
-        window.location.href = "/";
-    }
+    console.error("🚨 Interceptor capturou erro:", error.response?.status, error.config.url);
     return Promise.reject(error);
-  }
+    }
 );
 
 export const LoginAPI = (loginData: LoginData) => {

@@ -48,6 +48,7 @@ export function RegisterFormPatient() {
                   setProfessionalId(profId);
                   sessionStorage.setItem("profId", profId)
                   const hoursResponse = await GetProfessionalHoursAPI(profId);
+                  console.log("horarios: " + hoursResponse.data)
                   
                   let hours = [];
                   if (Array.isArray(hoursResponse.data)) hours = hoursResponse.data;

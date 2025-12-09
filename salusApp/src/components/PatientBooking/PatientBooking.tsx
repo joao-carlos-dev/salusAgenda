@@ -11,10 +11,15 @@ import "./PatientBooking.css";
 
 // Reutilizando interfaces ou definindo locais
 interface ProfessionalData {
+  occupation?: string;
+  expertise?: string;
+  professionalData?: {
     name?: string;
-    occupation?: string;
-    expertise?: string;
-    personalData?: { name?: string; }
+    cpf?: string;
+    email?: string;
+    gender?: string;
+    phoneNumber?: string;
+  };
 }
 
 const PatientBooking = () => {
@@ -36,7 +41,9 @@ const PatientBooking = () => {
         const validateAndFetch = async () => {
             try {
                 const profId = sessionStorage.getItem("profId")!;
+                setProfessionalId(profId)
                 const docResponse = await GetProfessionalDataById(profId);
+                console.log(docResponse.data)
                 setDoctor(docResponse.data as ProfessionalData);
                 setPatientId(sessionStorage.getItem("idPatient")!)
                 const hoursResponse = await GetProfessionalHoursAPI(profId);
@@ -67,9 +74,8 @@ const PatientBooking = () => {
     const handleBooking = async () => {
         if (!patientId) {
             alert("Você precisa fazer login como paciente para agendar.");
-            // Salva a URL para voltar depois do login
             sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
-            navigate("/"); // Vai para login
+            navigate("/");
             return;
         }
         if (!selectedTime) {
@@ -84,7 +90,7 @@ const PatientBooking = () => {
             consultationDate: dateStr,
             consultationTime: timeStr,
             consultationDescription: bookingNote || "Agendamento via Link",
-            consultationCategoryId: 1, // Padrão
+            consultationCategoryId: 1, 
             patientId: patientId,
             professionalUserId: professionalId
         };
@@ -92,17 +98,14 @@ const PatientBooking = () => {
         try {
             await SchedulingRegisterApi(payload);
             alert("Consulta agendada com sucesso!");
-            navigate("/"); // Redireciona para home do paciente
+            navigate("/");
+            sessionStorage.clear
         } catch (err) {
             console.error(err);
             alert("Erro ao agendar consulta.");
         }
     };
-
-    if (loading) return <div className="loading-screen">Validando link...</div>;
-    if (error) return <div className="error-screen"><i className="bi bi-x-circle"></i> {error}</div>;
-
-    const doctorName = doctor?.name || doctor?.personalData?.name || "Doutor(a)";
+  const doctorName = doctor?.professionalData?.name || "Doutor(a)";
 
     return (
         <div className="patient-booking-container">
