@@ -20,9 +20,9 @@ const SchedulingRegister = () => {
   const [patientIdInput, setPatientIdInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 2. BUSCA DADOS E VALIDA ACESSO
+  
   useEffect(() => {
-    // Se faltar dados essenciais, volta para o início
+   
     if (!date || !time || !professionalId) {
       toastService.warning(
         "Nenhum horário selecionado. Você será redirecionado.",
@@ -49,16 +49,16 @@ const SchedulingRegister = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Formatação de segurança para o Backend
+
     const formattedTime = time.length === 5 ? `${time}:00` : time;
 
     const payload: ScheduleRequestDto = {
-      consultationDate: date, // Já deve vir YYYY-MM-DD do componente anterior
+      consultationDate: date, 
       consultationTime: formattedTime,
       consultationDescription: description,
       consultationCategoryId: Number(categoryId),
       patientId: patientIdInput,
-      professionalUserId: professionalId, // Usa o ID recebido via state
+      professionalUserId: professionalId,
     };
 
     try {
@@ -67,7 +67,6 @@ const SchedulingRegister = () => {
 
       toastService.success("Consulta agendada com sucesso!");
 
-      // Limpa histórico e redireciona para Home ou Meus Agendamentos
       navigate("/home", { replace: true });
     } catch (error) {
       toastService.handleApiError(error, "Erro ao agendar consulta");
@@ -76,10 +75,10 @@ const SchedulingRegister = () => {
     }
   };
 
-  // Se não tiver dados, não renderiza nada (o useEffect vai redirecionar)
+  
   if (!date || !time) return null;
 
-  // Formatação visual da data para o usuário (PT-BR)
+
   const displayDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR");
 
   return (
