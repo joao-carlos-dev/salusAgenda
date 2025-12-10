@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { RegisterPayload } from "../../interfaces/RegisterPayload";
 import type { FormData } from "../../interfaces/FormData";
 import { GetProfessionalDataById, GetProfessionalHoursAPI, RegisterPatient, ValidateConsultationLinkApi } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import isError from "../../Utils/isError";
 import PatientInformation from "../PatientInformation/PatientInformation";
 import PatientDemographicInformation from "../PatientDemographicInformation/PatientDemographicInformation";
@@ -17,6 +18,7 @@ const initialData: FormData = {
   phoneNumber: "",
   birthDate: "",
 };
+
 interface ProfessionalData {
     name?: string;
     occupation?: string;
@@ -40,7 +42,10 @@ export function RegisterFormPatient() {
   const [patientId, setPatientId] = useState(""); // Deve vir do login do paciente
   useEffect(() => {
           const validateAndFetch = async () => {
-              if (!linkId) return;
+              if (!linkId) {
+                toastService.error("Link de agendamento não fornecido");
+                return;
+              }
               try {
                   const response = await ValidateConsultationLinkApi(linkId);
                   
@@ -48,6 +53,7 @@ export function RegisterFormPatient() {
                   setProfessionalId(profId);
                   sessionStorage.setItem("profId", profId)
                   const hoursResponse = await GetProfessionalHoursAPI(profId);
+                  console.log("horarios: " + hoursResponse.data)
                   
                   let hours = [];
                   if (Array.isArray(hoursResponse.data)) hours = hoursResponse.data;
@@ -59,15 +65,16 @@ export function RegisterFormPatient() {
                       setPatientId(parsed.id || parsed.userId || "");
                   }
               } catch (err) {
-                  console.error(err);
-                  setError("Este link de agendamento é inválido ou expirou.");
+                  toastService.error("Este link de agendamento é inválido ou expirou");
+                  setError("Link inválido");
+                  setTimeout(() => navigate("/"), 2000);
               } finally {
                   setLoading(false);
               }
           };
   
           validateAndFetch();
-      }, [linkId]);
+      }, [linkId, navigate]);
       if (loading) return <div className="loading-screen">Validando link...</div>;
       if (error) return <div className="error-screen"><i className="bi bi-x-circle"></i> {error}</div>;
 
@@ -107,17 +114,17 @@ export function RegisterFormPatient() {
     setIsLoading(true);
 
     try {
-      const response = await RegisterPatient(payload);
-       console.log("✅ Resposta da API:", response.status, response.data);
-      if (response.status === 201) {
-        navigate("/agendar");
-        sessionStorage.setItem("idPatient", response.data.idPatient)
-      } else {
-        alert("Cadastro efetuado, mas status inesperado.");
-      }
+        const response = await RegisterPatient(payload);
+        if (response.status === 201) {
+          toastService.success("Cadastro realizado com sucesso!");
+          navigate("/agendar");
+          sessionStorage.setItem("idPatient", response.data.idPatient)
+        } else {
+          toastService.warning("Cadastro efetuado, mas status inesperado.");
+        }
     } catch (e: unknown) {
-      const erroMessage = isError(e) ? e.message : "An unknown error corrured";
-      console.error("Cadastro error: ", erroMessage);
+      toastService.handleApiError(e, "Erro ao registrar paciente");
+      console.error("Cadastro error: ", isError(e) ? e.message : "Unknown error");
     } finally {
       setIsLoading(false);
     }

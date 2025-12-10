@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { RegisterPayload } from "../../interfaces/RegisterPayload";
 import type { FormData } from "../../interfaces/FormData";
 import { RegisterAPI } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import isError from "../../Utils/isError";
 
 import PersonalInformation from "../PersonalInformation/PersonalInformation";
@@ -78,13 +79,14 @@ export function RegisterForm() {
     try {
       const response = await RegisterAPI(payload);
       if (response.status === 201) {
+        toastService.success("Cadastro realizado com sucesso! Faça login para continuar.");
         navigate("/");
       } else {
-        alert("Cadastro efetuado, mas status inesperado.");
+        toastService.warning("Cadastro efetuado, mas status inesperado.");
       }
     } catch (e: unknown) {
-      const erroMessage = isError(e) ? e.message : "An unknown error corrured";
-      console.error("Cadastro error: ", erroMessage);
+      toastService.handleApiError(e, "Erro ao registrar profissional");
+      console.error("Cadastro error: ", isError(e) ? e.message : "Unknown error");
     } finally {
       setIsLoading(false);
     }

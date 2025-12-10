@@ -3,6 +3,7 @@ import Salustext from "../../img/sallustext.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { StepProps } from "../../interfaces/StepProps";
+import { Link } from "react-router-dom";
 
 const patientInformation = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
@@ -92,6 +93,7 @@ const PatientInformation: React.FC<StepProps> = ({
             {errors.password && (
               <p className="error">{errors.password.message}</p>
             )}
+            <Link to="/">Já é um paciente cadastrado?</Link>
           </form>
         </div>
         <button
@@ -103,6 +105,7 @@ const PatientInformation: React.FC<StepProps> = ({
           Prosseguir
           {!isEdit && <i className="bi bi-arrow-right"></i>}
         </button>
+        
       </section>
     </>
   );
