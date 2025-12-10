@@ -3,23 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { jwtDecode } from "jwt-decode";
-
+import iziToast from "izitoast";
 import isError from "../../Utils/isError";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 
-// Importe as duas APIs de login
-import { LoginAPI, LoginPatient } from "../../services/salusApi";
+// import type { LoginData } from "../../interfaces/LoginData";
 
-// Interface para o Token
-interface TokenPayload {
-  sub?: string;
-  email?: string;
-  name?: string;
-  id?: string;
-  [key: string]: unknown;
-}
+import { LoginAPI, LoginPatient } from "../../services/salusApi";
 
 const loginSchema = z.object({
   email: z
@@ -37,8 +28,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
-
-  // Estado para alternar as abas (Padrão: Paciente, pois é o fluxo mais comum vindo de links)
   const [userType, setUserType] = useState<UserType>("patient");
 
   const {
@@ -50,57 +39,46 @@ const Login = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    
     setIsLoading(true);
     setLoginError("");
 
     try {
       let response;
-
       if (userType === "professional") {
         response = await LoginAPI(data);
       } else {
         response = await LoginPatient(data);
       }
 
-      console.log(` Resposta Login (${userType}):`, response.data);
+      console.log("Resposta back", response.data);
+      console.log(`Resposta (${userType}):`, response.data);
 
       if (response.data && response.status === 200) {
-        // Salva Token e Tipo
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("userType", userType);
 
-        // Salva dados do usuário (id, nome, etc)
         if (
           response.data.id ||
           response.data.user ||
           response.data.personalData
         ) {
           const dataToSave = response.data.user || response.data;
+
           sessionStorage.setItem("userData", JSON.stringify(dataToSave));
         }
-        // console.log("Token", response.data.token);
-        // navigate("/schedulingProfessional");
-
         if (userType === "professional") {
           navigate("/schedulingProfessional");
         } else {
-          // Fluxo normal (Dashboard)
-          if (userType === "professional") {
-            navigate("/schedulingProfessional");
-          } else {
-            // Rota da home do paciente (ajuste conforme suas rotas)
-            navigate("/schedulingregister");
-          }
+          navigate("/agendar");
         }
-      } else {
-        setLoginError("Falha no login. Verifique suas credenciais.");
       }
     } catch (e: unknown) {
-      const errorMessage = isError(e)
-        ? e.message
-        : "Ocorreu um erro desconhecido";
-      setLoginError(errorMessage);
-      console.error("Login error: ", errorMessage);
+      iziToast.error({
+          title: "Erro no login",
+          message: "Credenciais inválidas. Tente novamente.",
+          position: "topRight",
+        });
     } finally {
       setIsLoading(false);
     }
@@ -113,99 +91,80 @@ const Login = () => {
         <div className="loginRegisterTitleContainer">
           <h1>Faça seu login</h1>
         </div>
-
         <div className="loginRegister">
-          {/* --- ABAS DE SELEÇÃO --- */}
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              marginBottom: "20px",
-              width: "100%",
-            }}
-          >
+          <div className="userTypeSelector">
             <button
               type="button"
+              className={userType == "patient" ? "active" : ""}
               onClick={() => setUserType("patient")}
-              style={{
-                flex: 1,
-                padding: "12px",
-                border: "none",
-                // Estilo condicional: Azul se ativo, Cinza se inativo
-                background: userType === "patient" ? "#007bff" : "#f1f3f5",
-                color: userType === "patient" ? "white" : "#666",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "600",
-                transition: "all 0.2s",
-              }}
             >
-              Sou Paciente
+              Paciente
             </button>
+
             <button
               type="button"
               className={userType == "professional" ? "active" : ""}
               onClick={() => setUserType("professional")}
             >
-              Sou Profissional
+              Profissional
             </button>
-          </div>
 
+          </div>
           <form className="loginRegisterForm" onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="text_mail" className="inputLabel">
               E-mail
             </label>
             <input
+              //   required
               className={errors.email ? "inputError" : ""}
               autoComplete="email"
               type="email"
+              //   name="email"
+              placeholder="Digite seu e-mail"
+              //   value={loginData.email}
+              //   onChange={handleLogin}
               id="text_mail"
-              placeholder={
-                userType === "patient"
-                  ? "E-mail do paciente"
-                  : "E-mail profissional"
-              }
               {...register("email")}
             />
+
             {errors.email && <p className="error">{errors.email.message}</p>}
 
             <label htmlFor="password" className="inputLabel">
               Senha
             </label>
             <input
+              //   required
               className={errors.password ? "inputError" : ""}
               autoComplete="current-password"
               type="password"
+              //   name="password"
               placeholder="Digite sua senha"
+              //   value={loginData.password}
+              //   onChange={handleLogin}
               {...register("password")}
             />
+
             {errors.password && (
               <p className="error">{errors.password.message}</p>
             )}
 
-            {loginError && (
-              <p className="error" style={{ textAlign: "center" }}>
-                {loginError}
-              </p>
-            )}
+            
 
             <button
               className="button-submit"
               type="submit"
               disabled={isLoading}
+              //   onClick={handleSubmit}
             >
-              {isLoading
-                ? "Entrando..."
-                : `Login como ${
-                    userType === "patient" ? "Paciente" : "Profissional"
-                  }`}
+              {isLoading ? "Carregando..." : "Login"}
             </button>
           </form>
         </div>
 
         <Link to={userType === "professional" ? "/register" : "/registerpatient"} className="registerText">
-            Ainda não tem uma conta?<strong>Registre-se como {userType === "patient" ? "Paciente" : "Profissional"}</strong>
+            Ainda não tem uma conta? <strong>Registre-se como {userType === "patient" ? "Paciente" : "Profissional"}</strong>
         </Link>
+    
       </section>
     </>
   );

@@ -9,6 +9,7 @@ import {
 import "./schedulingProfessional.css";
 import type { ScheduleData } from "../../interfaces/ScheduleData";
 import { FindAllSchedules } from "../../services/salusApi";
+import iziToast from "izitoast";
 
 
 interface TokenPayload {
@@ -216,11 +217,15 @@ const SchedulingProfessional = () => {
     const fetchSchedules = async (date: Date) => {
       const dateStr = getLocalISODate(date);
       try {
-        console.log("📅 Buscando consultas para:", dateStr);
+        
         const response = await FindAllSchedules(userId, dateStr);
-        console.log("🩺 Consultas recebidas:", response.data);
+        
         setSchedules(response.data);
       } catch (error) {
+        iziToast.error({
+          title: "Erro",
+          message: "Não foi possível carregar as consultas.",
+        });
         console.error("Erro ao buscar consultas:", error);
         setSchedules([]);
       }
