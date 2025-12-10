@@ -100,6 +100,20 @@ export const FindAllSchedules = (professionalId: string, date: string) => {
   return apiClient.get(`schedule/findSchedule/${professionalId}?date=${date}`)
 }
 
+// export const deleteHours = (professionalId: string, hours: string) => {
+//   return apiClient.delete(`professional/deleteHours/${professionalId}`);
+// }
+
+export const deleteHours = (professionalId: string, hours: string) => {
+  // O Axios trata o segundo parâmetro do delete como 'config'
+  return apiClient.delete(`professional/deleteHours/${professionalId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: hours, // A string do horário vai aqui (ex: "08:00")
+  });
+};
+
 export const GenerateConsultationLinkApi = (professionalId: string) => {
   return apiClient.post('/consultationLink/generate', { professionalId });
 }

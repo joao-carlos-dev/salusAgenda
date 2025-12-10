@@ -5,7 +5,6 @@ import App from './App.tsx'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'izitoast/dist/css/iziToast.min.css';
 import 'izitoast/dist/css/iziToast.min.css';
-import iziToast from 'izitoast'; 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

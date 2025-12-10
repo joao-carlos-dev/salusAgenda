@@ -26,8 +26,8 @@ const PatientBooking = () => {
     
     const navigate = useNavigate();
     
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState("");
     const [doctor, setDoctor] = useState<ProfessionalData | null>(null);
     const [professionalId, setProfessionalId] = useState("");
     const [availableHours, setAvailableHours] = useState<string[]>([]);
@@ -63,9 +63,7 @@ const PatientBooking = () => {
 
             } catch (err) {
                 toastService.handleApiError(err, "Erro ao carregar informações do agendamento");
-                setError("Erro ao carregar dados");
-            } finally {
-                setLoading(false);
+                
             }
         };
 

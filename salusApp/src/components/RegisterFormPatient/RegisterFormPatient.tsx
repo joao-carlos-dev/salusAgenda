@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import type { RegisterPayload } from "../../interfaces/RegisterPayload";
 import type { FormData } from "../../interfaces/FormData";
-import { GetProfessionalDataById, GetProfessionalHoursAPI, RegisterPatient, ValidateConsultationLinkApi } from "../../services/salusApi";
+import { GetProfessionalHoursAPI, RegisterPatient, ValidateConsultationLinkApi } from "../../services/salusApi";
 import { toastService } from "../../services/toastService";
 import isError from "../../Utils/isError";
 import PatientInformation from "../PatientInformation/PatientInformation";
@@ -19,12 +19,6 @@ const initialData: FormData = {
   birthDate: "",
 };
 
-interface ProfessionalData {
-    name?: string;
-    occupation?: string;
-    expertise?: string;
-    personalData?: { name?: string; }
-}
 
 export function RegisterFormPatient() {
   
@@ -36,10 +30,10 @@ export function RegisterFormPatient() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [doctor, setDoctor] = useState<ProfessionalData | null>(null);
-  const [professionalId, setProfessionalId] = useState("");
-  const [availableHours, setAvailableHours] = useState<string[]>([]);
-  const [patientId, setPatientId] = useState(""); // Deve vir do login do paciente
+  const [, setProfessionalId] = useState("");
+  const [, setAvailableHours] = useState<string[]>([]);
+  const [, setPatientId] = useState(""); 
+  
   useEffect(() => {
           const validateAndFetch = async () => {
               if (!linkId) {
@@ -64,7 +58,8 @@ export function RegisterFormPatient() {
                       const parsed = JSON.parse(savedData);
                       setPatientId(parsed.id || parsed.userId || "");
                   }
-              } catch (err) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              } catch (error) {
                   toastService.error("Este link de agendamento é inválido ou expirou");
                   setError("Link inválido");
                   setTimeout(() => navigate("/"), 2000);
@@ -154,3 +149,4 @@ export function RegisterFormPatient() {
 
   return <div>{content}</div>;
 }
+

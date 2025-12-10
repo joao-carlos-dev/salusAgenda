@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  deleteHours,
   GenerateConsultationLinkApi,
   GetProfessionalDataById,
   GetProfessionalHoursAPI,
-  UpdateProfessionalHoursAPI,
 } from "../../services/salusApi";
 import "./schedulingProfessional.css";
 import type { ScheduleData } from "../../interfaces/ScheduleData";
@@ -12,12 +12,6 @@ import { FindAllSchedules } from "../../services/salusApi";
 import iziToast from "izitoast";
 import { toastService } from "../../services/toastService";
 
-
-interface TokenPayload {
-  sub: string;
-  name?: string;
-  [key: string]: unknown;
-}
 
 interface ProfessionalResponse {
   professionalData?: {
@@ -62,6 +56,7 @@ const SchedulingProfessional = () => {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [configuredHours, setConfiguredHours] = useState<string[]>([]);
+  // const [deleteHour, setdeleteHours] = useState<string[]>([]);
 
   const handleNextDay = () => {
     const newDate = new Date(selectedDate);
@@ -90,13 +85,14 @@ const SchedulingProfessional = () => {
       .replace(".", "");
   };
 
-  const formatDateKey = (date: Date) => {
-    return getLocalISODate(date);
-  };
+  // const formatDateKey = (date: Date) => {
+  //   return getLocalISODate(date);
+  // };
 
   const handleBlockHour = async (timeToRemove: string) => {
     if (!userId) return;
 
+    // Confirmação visual
     if (
       !window.confirm(
         `Deseja remover o horário ${timeToRemove} da sua grade de atendimento?`
@@ -105,17 +101,23 @@ const SchedulingProfessional = () => {
       return;
     }
 
+    // Otimistic Update: remove visualmente antes da API responder
+    const previousHours = [...configuredHours]; // Guarda backup caso falhe
     const newHoursList = configuredHours.filter(
       (h) => formatTime(h) !== timeToRemove
     );
 
+    setConfiguredHours(newHoursList); // Atualiza a tela imediatamente
+
     try {
-      setConfiguredHours(newHoursList);
-      await UpdateProfessionalHoursAPI(userId, newHoursList);
+      // timeToRemove já está no formato "HH:mm" vindo do formatTime no renderDailySlots
+      await deleteHours(userId, timeToRemove); 
+      
       toastService.success(`Horário ${timeToRemove} removido da grade`);
     } catch (error) {
-      setConfiguredHours(configuredHours);
-      toastService.handleApiError(error, "Erro ao atualizar a grade de horários");
+      // Se der erro, reverte a lista original
+      setConfiguredHours(previousHours); 
+      toastService.handleApiError(error, "Erro ao remover horário.");
     }
   };
 
@@ -137,9 +139,9 @@ const SchedulingProfessional = () => {
 
   useEffect(() => {
     const savedData = sessionStorage.getItem("userData");
-    const token = sessionStorage.getItem("token");
+    // const token = sessionStorage.getItem("token");
     let currentId = "";
-    let tokenName = "";
+    // let tokenName = "";
 
     if (savedData) {
       try {
@@ -169,7 +171,7 @@ const SchedulingProfessional = () => {
 
         if (data) {
           const pData = data.professionalData || {};
-          const realName = pData.name || data.name || tokenName || "Doutor(a)";
+          const realName = pData.name || data.name || "Doutor(a)";
           const realOccupation =
             pData.occupation || data.occupation || "Médico(a)";
           const realExpertise =
@@ -207,7 +209,7 @@ const SchedulingProfessional = () => {
     fetchData();
   }, []);
 
-  // 2️⃣ Segundo useEffect → busca as consultas (depende de userId e selectedDate)
+  //Segundo useEffect → busca as consultas (depende de userId e selectedDate)
   useEffect(() => {
     if (!userId) return;
 
@@ -246,7 +248,7 @@ const SchedulingProfessional = () => {
       );
     }
 
-    const dateKey = formatDateKey(selectedDate);
+    // const dateKey = formatDateKey(selectedDate);
 
     const appointmentsToday = schedules.filter(
       (s) => s.consultationDate === getLocalISODate(selectedDate)
@@ -293,7 +295,7 @@ const SchedulingProfessional = () => {
               onClick={() => handleBlockHour(simpleTime)}
               title="Remover este horário da grade"
             >
-              Liberar
+              Bloquear
             </button>
             <button className="buttonFreeHour">Livre</button>
           </div>

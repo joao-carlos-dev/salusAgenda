@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toastService } from "../../services/toastService";
-import isError from "../../Utils/isError";
+// import isError from "../../Utils/isError";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
 
