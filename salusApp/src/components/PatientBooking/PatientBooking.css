@@ -3,36 +3,26 @@
     padding: 40px 30px;
 }
 
-.doctor-avatar i {
-    font-size: 3.5rem;
-    color: #007bff;
-    background-color: #e7f1ff;
-    padding: 15px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    display: inline-block;
-}
-
 .auth-card h2 {
-    color: #333;
+    color: var(--darkGreenColor);
     margin-bottom: 5px;
 }
 
 .expertise {
-    color: #666;
+    color: var(--darkGreenColor);
     font-weight: 500;
     margin-bottom: 25px;
 }
 
 .divider {
     height: 1px;
-    background-color: #eee;
+    background-color: var(--whiteColor);
     margin: 20px 0;
     width: 100%;
 }
 
 .instruction {
-    color: #555;
+    color: var(--darkGreenColor);
     margin-bottom: 30px;
 }
 
@@ -45,8 +35,8 @@
 .btn-login {
     width: 100%;
     padding: 14px;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--darkGreenColor);
+    color: var(--whiteColor);
     border: none;
     border-radius: 8px;
     font-size: 1rem;
@@ -56,15 +46,15 @@
 }
 
 .btn-login:hover {
-    background-color: #0056b3;
+    background-color: var(--lightGreenColor);
 }
 
 .btn-register {
     width: 100%;
     padding: 14px;
-    background-color: white;
-    color: #007bff;
-    border: 2px solid #007bff;
+    background-color: var(--whiteColor);
+    color: var(--lightGreenColor);
+    border: 2px solid var(--darkGreenColor);
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
@@ -73,26 +63,26 @@
 }
 
 .btn-register:hover {
-    background-color: #f0f8ff;
+    background-color: var(--whiteColor);
 }
 
 .patient-booking-container {
     max-width: 500px;
     margin: 40px auto;
     padding: 20px;
-    background: white;
+    background: var(--whiteColor);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px var(--darkGreenColor);
 }
 
 .doctor-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--whiteColor);
     padding-bottom: 15px;
     margin-bottom: 20px;
 }
 
 .doctor-header h2 {
-    color: #333;
+    color: var(--darkGreenColor);
     font-size: 1.5rem;
     margin-bottom: 15px;
 }
@@ -103,15 +93,15 @@
     gap: 15px;
 }
 
-.doctor-info .avatar {
+/* .doctor-info .avatar {
     font-size: 3rem;
     color: #007bff;
-}
+} */
 
 .doctor-info h3 {
     margin: 0;
     font-size: 1.1rem;
-    color: #2c3e50;
+    color: var(--darkGreenColor);
 }
 
 .calendar-section, .slots-section, .notes-section {
@@ -122,13 +112,13 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #555;
+    color: var(--darkGreenColor);
 }
 
 input[type="date"], textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--darkGreenColor);
     border-radius: 8px;
     font-size: 1rem;
     box-sizing: border-box;
@@ -142,8 +132,8 @@ input[type="date"], textarea {
 
 .slot-btn {
     padding: 10px;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
+    background: var(--whiteColor);
+    border: 1px solid var(--darkGreenColor);
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
@@ -151,20 +141,20 @@ input[type="date"], textarea {
 }
 
 .slot-btn:hover {
-    background: #e9ecef;
+    background: var(--whiteColor);
 }
 
 .slot-btn.active {
-    background: #007bff;
-    color: white;
-    border-color: #0056b3;
+    background: var(--darkGreenColor);
+    color: var(--whiteColor);
+    border-color: var(--lightGreenColor);
 }
 
 .confirm-btn {
     width: 100%;
     padding: 15px;
-    background: #28a745;
-    color: white;
+    background: var(--darkGreenColor);
+    color: var(--whiteColor);
     border: none;
     border-radius: 8px;
     font-size: 1.1rem;
@@ -174,11 +164,11 @@ input[type="date"], textarea {
 }
 
 .confirm-btn:hover {
-    background: #218838;
+    background: var(--lightGreenColor);
 }
 
 .confirm-btn:disabled {
-    background: #ccc;
+    background: var(--whiteColor);
     cursor: not-allowed;
 }
 
@@ -188,10 +178,10 @@ input[type="date"], textarea {
     align-items: center;
     height: 100vh;
     font-size: 1.2rem;
-    color: #555;
+    color: var(--whiteColor);
 }
 
 .error-screen {
-    color: #dc3545;
+    color: var(--colorRed);
     gap: 10px;
 }

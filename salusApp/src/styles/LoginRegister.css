@@ -27,10 +27,6 @@
   font-weight: 600;
 }
 
-.userTypeSelector button:hover:not(.active) {
-  background-color: var(--darkGreenColor);
-}
-
 .containerLoginRegister {
   display: flex;
   flex-direction: column;

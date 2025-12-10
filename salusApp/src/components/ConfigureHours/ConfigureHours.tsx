@@ -4,6 +4,20 @@ import { GetProfessionalHoursAPI, UpdateProfessionalHoursAPI } from "../../servi
 import { toastService } from "../../services/toastService";
 import "./configureHours.css";
 
+const generateTimeSlots = () => {
+    const slots = [];
+    const startHour = 7;
+    const endHour = 19;
+
+    for (let hour = startHour; hour <= endHour; hour++) {
+      slots.push(`${hour.toString().padStart(2, "0")}:00`);
+      slots.push(`${hour.toString().padStart(2, "0")}:30`);
+    }
+    return slots;
+  };
+
+const TIME_SLOTS = generateTimeSlots();
+
 const ConfigureHours = () => {
   const [selectedHours, setSelectedHours] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,19 +61,19 @@ const ConfigureHours = () => {
     fetchHours();
   }, []);
 
-  const generateTimeSlots = () => {
-    const slots = [];
-    const startHour = 7;
-    const endHour = 19;
+  // const generateTimeSlots = () => {
+  //   const slots = [];
+  //   const startHour = 7;
+  //   const endHour = 19;
 
-    for (let hour = startHour; hour <= endHour; hour++) {
-      slots.push(`${hour.toString().padStart(2, "0")}:00`);
-      slots.push(`${hour.toString().padStart(2, "0")}:30`);
-    }
-    return slots;
-  };
+  //   for (let hour = startHour; hour <= endHour; hour++) {
+  //     slots.push(`${hour.toString().padStart(2, "0")}:00`);
+  //     slots.push(`${hour.toString().padStart(2, "0")}:30`);
+  //   }
+  //   return slots;
+  // };
 
-  const timeSlots = generateTimeSlots();
+  // const timeSlots = generateTimeSlots();
 
   const toggleHour = (time: string) => {
     if (selectedHours.includes(time)) {
@@ -103,7 +117,7 @@ const ConfigureHours = () => {
       </div>
 
       <div className="hours-grid">
-        {timeSlots.map((time) => (
+        {TIME_SLOTS.map((time) => (
           <button
             key={time}
             className={`time-slot ${

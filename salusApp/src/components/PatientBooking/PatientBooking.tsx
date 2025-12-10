@@ -112,7 +112,7 @@ const PatientBooking = () => {
             <div className="doctor-header">
                 <h2>Agendar Consulta</h2>
                 <div className="doctor-info">
-                    <i className="bi bi-person-circle avatar"></i>
+                    {/* <i className="bi bi-person-circle avatar"></i> */}
                     <div>
                         <h3>Dr(a). {doctorName}</h3>
                         <span>{doctor?.expertise || "Médico"}</span>
