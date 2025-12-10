@@ -3,12 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import iziToast from "izitoast";
+import { toastService } from "../../services/toastService";
 import isError from "../../Utils/isError";
 import "../../styles/LoginRegister.css";
 import Salustext from "../../img/sallustext.png";
-
-// import type { LoginData } from "../../interfaces/LoginData";
 
 import { LoginAPI, LoginPatient } from "../../services/salusApi";
 
@@ -27,7 +25,6 @@ type UserType = "professional" | "patient";
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
   const [userType, setUserType] = useState<UserType>("patient");
 
   const {
@@ -41,7 +38,6 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     
     setIsLoading(true);
-    setLoginError("");
 
     try {
       let response;
@@ -50,9 +46,6 @@ const Login = () => {
       } else {
         response = await LoginPatient(data);
       }
-
-      console.log("Resposta back", response.data);
-      console.log(`Resposta (${userType}):`, response.data);
 
       if (response.data && response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
@@ -64,21 +57,19 @@ const Login = () => {
           response.data.personalData
         ) {
           const dataToSave = response.data.user || response.data;
-
           sessionStorage.setItem("userData", JSON.stringify(dataToSave));
         }
+
+        toastService.success(`Bem-vindo de volta, ${userType === 'professional' ? 'Dr(a)' : 'paciente'}!`);
+
         if (userType === "professional") {
-          navigate("/schedulingProfessional");
+          navigate("/schedulingprofessional");
         } else {
           navigate("/agendar");
         }
       }
     } catch (e: unknown) {
-      iziToast.error({
-          title: "Erro no login",
-          message: "Credenciais inválidas. Tente novamente.",
-          position: "topRight",
-        });
+      toastService.handleApiError(e, "E-mail ou senha inválidos");
     } finally {
       setIsLoading(false);
     }
@@ -115,14 +106,10 @@ const Login = () => {
               E-mail
             </label>
             <input
-              //   required
               className={errors.email ? "inputError" : ""}
               autoComplete="email"
               type="email"
-              //   name="email"
               placeholder="Digite seu e-mail"
-              //   value={loginData.email}
-              //   onChange={handleLogin}
               id="text_mail"
               {...register("email")}
             />
@@ -133,14 +120,10 @@ const Login = () => {
               Senha
             </label>
             <input
-              //   required
               className={errors.password ? "inputError" : ""}
               autoComplete="current-password"
               type="password"
-              //   name="password"
               placeholder="Digite sua senha"
-              //   value={loginData.password}
-              //   onChange={handleLogin}
               {...register("password")}
             />
 
@@ -148,13 +131,10 @@ const Login = () => {
               <p className="error">{errors.password.message}</p>
             )}
 
-            
-
             <button
               className="button-submit"
               type="submit"
               disabled={isLoading}
-              //   onClick={handleSubmit}
             >
               {isLoading ? "Carregando..." : "Login"}
             </button>

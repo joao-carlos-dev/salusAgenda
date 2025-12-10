@@ -10,6 +10,7 @@ import "./schedulingProfessional.css";
 import type { ScheduleData } from "../../interfaces/ScheduleData";
 import { FindAllSchedules } from "../../services/salusApi";
 import iziToast from "izitoast";
+import { toastService } from "../../services/toastService";
 
 
 interface TokenPayload {
@@ -110,31 +111,27 @@ const SchedulingProfessional = () => {
 
     try {
       setConfiguredHours(newHoursList);
-
       await UpdateProfessionalHoursAPI(userId, newHoursList);
+      toastService.success(`Horário ${timeToRemove} removido da grade`);
     } catch (error) {
-      console.error("Erro ao remover horário:", error);
-      alert("Erro ao atualizar a grade. Tente novamente.");
+      setConfiguredHours(configuredHours);
+      toastService.handleApiError(error, "Erro ao atualizar a grade de horários");
     }
   };
 
   const handleGenerateLink = async () => {
     if (!userId) {
-      alert("Erro: ID do profissional não encontrado.");
+      toastService.error("Erro: ID do profissional não encontrado");
       return;
     }
 
     try {
       const response = await GenerateConsultationLinkApi(userId);
-      console.log("Link gerado:", response.data);
       const link = response.data.url;
       await navigator.clipboard.writeText(link);
-      alert(
-        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${link}`
-      );
+      toastService.success("Link copiado para a área de transferência!");
     } catch (error) {
-      console.error("Erro ao gerar link:", error);
-      alert("Erro ao gerar link de agendamento.");
+      toastService.handleApiError(error, "Erro ao gerar link de agendamento");
     }
   };
 

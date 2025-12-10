@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import {useNavigate } from "react-router-dom";
 import { 
-
     GetProfessionalDataById, 
     GetProfessionalHoursAPI,
     SchedulingRegisterApi,
     type ScheduleRequestDto
 } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import "./PatientBooking.css";
 
 // Reutilizando interfaces ou definindo locais
@@ -41,11 +41,12 @@ const PatientBooking = () => {
         const validateAndFetch = async () => {
             try {
                 const profId = sessionStorage.getItem("profId")!;
-                setProfessionalId(profId)
+                setProfessionalId(profId);
+                
                 const docResponse = await GetProfessionalDataById(profId);
-                console.log(docResponse.data)
                 setDoctor(docResponse.data as ProfessionalData);
-                setPatientId(sessionStorage.getItem("idPatient")!)
+                setPatientId(sessionStorage.getItem("idPatient")!);
+                
                 const hoursResponse = await GetProfessionalHoursAPI(profId);
                 
                 let hours = [];
@@ -61,8 +62,8 @@ const PatientBooking = () => {
                 }
 
             } catch (err) {
-                console.error(err);
-                setError("Erro ao agendar consulta, tente novamente mais tarde!.");
+                toastService.handleApiError(err, "Erro ao carregar informações do agendamento");
+                setError("Erro ao carregar dados");
             } finally {
                 setLoading(false);
             }
@@ -73,13 +74,13 @@ const PatientBooking = () => {
 
     const handleBooking = async () => {
         if (!patientId) {
-            alert("Você precisa fazer login como paciente para agendar.");
+            toastService.warning("Você precisa fazer login como paciente para agendar", "Aviso");
             sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
             navigate("/");
             return;
         }
         if (!selectedTime) {
-            alert("Selecione um horário.");
+            toastService.warning("Selecione um horário", "Aviso");
             return;
         }
 
@@ -97,12 +98,11 @@ const PatientBooking = () => {
 
         try {
             await SchedulingRegisterApi(payload);
-            alert("Consulta agendada com sucesso!");
+            toastService.success("Consulta agendada com sucesso!");
             navigate("/");
-            sessionStorage.clear
+            sessionStorage.clear();
         } catch (err) {
-            console.error(err);
-            alert("Erro ao agendar consulta.");
+            toastService.handleApiError(err, "Erro ao agendar consulta");
         }
     };
   const doctorName = doctor?.professionalData?.name || "Doutor(a)";

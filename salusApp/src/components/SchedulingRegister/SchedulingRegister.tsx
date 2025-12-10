@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Importe useLocation e useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   SchedulingRegisterApi,
   type ScheduleRequestDto,
 } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import "./SchedulingRegister.css";
 
 const SchedulingRegister = () => {
@@ -23,8 +24,11 @@ const SchedulingRegister = () => {
   useEffect(() => {
     // Se faltar dados essenciais, volta para o início
     if (!date || !time || !professionalId) {
-      alert("Nenhum horário selecionado. Você será redirecionado.");
-      navigate("/"); // Ou para /home
+      toastService.warning(
+        "Nenhum horário selecionado. Você será redirecionado.",
+        "Aviso"
+      );
+      setTimeout(() => navigate("/"), 2000);
       return;
     }
 
@@ -35,8 +39,8 @@ const SchedulingRegister = () => {
         const parsed = JSON.parse(savedData);
         const id = parsed.id || parsed.userId || parsed.personalData?.id;
         if (id) setPatientIdInput(id);
-      } catch {
-        console.log("Erro ao recuperar dados do usuário");
+      } catch (e) {
+        toastService.error("Erro ao recuperar dados do usuário");
       }
     }
   }, [date, time, professionalId, navigate]);
@@ -61,13 +65,12 @@ const SchedulingRegister = () => {
       console.log(" Enviando agendamento:", payload);
       await SchedulingRegisterApi(payload);
 
-      alert("Consulta agendada com sucesso!");
+      toastService.success("Consulta agendada com sucesso!");
 
       // Limpa histórico e redireciona para Home ou Meus Agendamentos
       navigate("/home", { replace: true });
     } catch (error) {
-      console.error("Erro ao agendar:", error);
-      alert("Erro ao realizar agendamento. Tente novamente.");
+      toastService.handleApiError(error, "Erro ao agendar consulta");
     } finally {
       setLoading(false);
     }
