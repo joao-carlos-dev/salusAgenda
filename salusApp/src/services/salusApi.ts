@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { LoginData } from '../interfaces/LoginData';
-// import type { FormData } from '../interfaces/FormData';
 import type { RegisterPayload } from '../interfaces/RegisterPayload';
+import { toastService } from './toastService';
 
 const apiClient = axios.create({
      
@@ -42,12 +42,15 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && (error.response.status === 403 || error.response.status === 401)) {
-        console.warn("Token expirado ou inválido. Redirecionando para login...");
+        toastService.error("Sessão expirada. Você será redirecionado para login.");
         
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("userData");
+        sessionStorage.removeItem("userType");
         
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
     }
     return Promise.reject(error);
   }
@@ -93,6 +96,9 @@ export const LoginPatient = (loginData: LoginData) => {
 export const SchedulingRegisterApi = (payload: ScheduleRequestDto) => {
   return apiClient.post('schedule/register', payload)
 }
+export const FindAllSchedules = (professionalId: string, date: string) => {
+  return apiClient.get(`schedule/findSchedule/${professionalId}?date=${date}`)
+}
 
 export const GenerateConsultationLinkApi = (professionalId: string) => {
   return apiClient.post('/consultationLink/generate', { professionalId });
@@ -107,7 +113,7 @@ export const FetchShareBySymbol = async (symbol: string) => {
           const response = await apiClient.get(`/Share/${symbol}`);
           return response;
       } catch (error) {
-          console.error("Error fetching share by symbol:", error);
+          toastService.handleApiError(error, "Erro ao buscar informações da ação");
           throw error;
       }
   }

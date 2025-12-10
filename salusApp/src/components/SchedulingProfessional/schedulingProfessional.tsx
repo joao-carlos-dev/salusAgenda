@@ -7,8 +7,12 @@ import {
   UpdateProfessionalHoursAPI,
 } from "../../services/salusApi";
 import "./schedulingProfessional.css";
+import type { ScheduleData } from "../../interfaces/ScheduleData";
+import { FindAllSchedules } from "../../services/salusApi";
+import iziToast from "izitoast";
+import { toastService } from "../../services/toastService";
 
-// --- INTERFACES ---
+
 interface TokenPayload {
   sub: string;
   name?: string;
@@ -27,15 +31,6 @@ interface ProfessionalResponse {
   occupation?: string;
   expertise?: string;
 }
-
-interface Consultation {
-  id: number;
-  time: string;
-  patientName: string;
-  age: number;
-  complaint: string;
-}
-
 const getLocalISODate = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -54,58 +49,13 @@ tomorrow.setDate(today.getDate() + 1);
 const dayAfter = new Date(today);
 dayAfter.setDate(today.getDate() + 2);
 
-const mockSchedule: Record<string, Consultation[]> = {
-  [getLocalISODate(today)]: [
-    {
-      id: 1,
-      time: "08:30",
-      patientName: "João Carlos Borges",
-      age: 31,
-      complaint: "Dores no corpo",
-    },
-    {
-      id: 2,
-      time: "10:00",
-      patientName: "Maria Silva",
-      age: 45,
-      complaint: "Enxaqueca constante",
-    },
-  ],
 
-  [getLocalISODate(tomorrow)]: [
-    {
-      id: 3,
-      time: "09:00",
-      patientName: "Pedro Alves",
-      age: 28,
-      complaint: "Check-up de rotina",
-    },
-  ],
-
-  [getLocalISODate(dayAfter)]: [
-    {
-      id: 4,
-      time: "14:00",
-      patientName: "Ana Clara",
-      age: 60,
-      complaint: "Dores nas articulações",
-    },
-    {
-      id: 5,
-      time: "15:30",
-      patientName: "Roberto Santos",
-      age: 50,
-      complaint: "Pressão alta",
-    },
-  ],
-};
 
 const SchedulingProfessional = () => {
   const [activeTab, setActiveTab] = useState("Dia");
   const [userId, setUserId] = useState("");
-
+  const [schedules, setSchedules] = useState<ScheduleData[]>([]);
   const navigate = useNavigate();
-
   const [doctorName, setDoctorName] = useState("");
   const [doctorExpertise, setDoctorExpertise] = useState("");
   const [doctorOccupation, setDoctorOccupation] = useState("");
@@ -117,6 +67,7 @@ const SchedulingProfessional = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(selectedDate.getDate() + 1);
     setSelectedDate(newDate);
+
   };
 
   const handlePrevDay = () => {
@@ -129,6 +80,7 @@ const SchedulingProfessional = () => {
     sessionStorage.clear();
     navigate("/");
   };
+
   const formatDateDisplay = (date: Date) => {
     return date
       .toLocaleDateString("pt-BR", {
@@ -159,31 +111,27 @@ const SchedulingProfessional = () => {
 
     try {
       setConfiguredHours(newHoursList);
-
       await UpdateProfessionalHoursAPI(userId, newHoursList);
+      toastService.success(`Horário ${timeToRemove} removido da grade`);
     } catch (error) {
-      console.error("Erro ao remover horário:", error);
-      alert("Erro ao atualizar a grade. Tente novamente.");
+      setConfiguredHours(configuredHours);
+      toastService.handleApiError(error, "Erro ao atualizar a grade de horários");
     }
   };
 
   const handleGenerateLink = async () => {
     if (!userId) {
-      alert("Erro: ID do profissional não encontrado.");
+      toastService.error("Erro: ID do profissional não encontrado");
       return;
     }
 
     try {
       const response = await GenerateConsultationLinkApi(userId);
-      console.log("Link gerado:", response.data);
       const link = response.data.url;
-       await navigator.clipboard.writeText(link);
-      alert(
-        `Link copiado para a área de transferência!\n\nEnvie para o paciente:\n${link}`
-      );
+      await navigator.clipboard.writeText(link);
+      toastService.success("Link copiado para a área de transferência!");
     } catch (error) {
-      console.error("Erro ao gerar link:", error);
-      alert("Erro ao gerar link de agendamento.");
+      toastService.handleApiError(error, "Erro ao gerar link de agendamento");
     }
   };
 
@@ -192,6 +140,7 @@ const SchedulingProfessional = () => {
     const token = sessionStorage.getItem("token");
     let currentId = "";
     let tokenName = "";
+
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
@@ -200,6 +149,7 @@ const SchedulingProfessional = () => {
           parsed.userId ||
           parsed.user?.id ||
           parsed.personalData?.id;
+
         if (currentId) {
           setUserId(currentId);
         } else {
@@ -209,10 +159,14 @@ const SchedulingProfessional = () => {
         console.error("Error parsing user data from sessionStorage:", e);
       }
     }
+
     const fetchData = async () => {
+      if (!currentId) return;
+
       try {
         const response = await GetProfessionalDataById(currentId);
         const data = response.data as ProfessionalResponse;
+
         if (data) {
           const pData = data.professionalData || {};
           const realName = pData.name || data.name || tokenName || "Doutor(a)";
@@ -220,6 +174,7 @@ const SchedulingProfessional = () => {
             pData.occupation || data.occupation || "Médico(a)";
           const realExpertise =
             pData.expertise || data.expertise || "Clínico Geral";
+
           setDoctorName(realName);
           setDoctorOccupation(realOccupation);
           setDoctorExpertise(realExpertise);
@@ -233,10 +188,7 @@ const SchedulingProfessional = () => {
 
         if (Array.isArray(responseHours.data)) {
           hoursList = responseHours.data;
-        } else if (
-          responseHours.data &&
-          typeof responseHours.data === "object"
-        ) {
+        } else if (responseHours.data && typeof responseHours.data === "object") {
           hoursList = Object.keys(responseHours.data);
         }
 
@@ -255,6 +207,30 @@ const SchedulingProfessional = () => {
     fetchData();
   }, []);
 
+  // 2️⃣ Segundo useEffect → busca as consultas (depende de userId e selectedDate)
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchSchedules = async (date: Date) => {
+      const dateStr = getLocalISODate(date);
+      try {
+        
+        const response = await FindAllSchedules(userId, dateStr);
+        
+        setSchedules(response.data);
+      } catch (error) {
+        iziToast.error({
+          title: "Erro",
+          message: "Não foi possível carregar as consultas.",
+        });
+        console.error("Erro ao buscar consultas:", error);
+        setSchedules([]);
+      }
+    };
+
+    fetchSchedules(selectedDate);
+  }, [userId, selectedDate]);
+
   const linkDestino = userId
     ? `/updateprofessional/${userId}`
     : "/updateprofessional";
@@ -272,13 +248,15 @@ const SchedulingProfessional = () => {
 
     const dateKey = formatDateKey(selectedDate);
 
-    const appointmentsToday = mockSchedule[dateKey] || [];
+    const appointmentsToday = schedules.filter(
+      (s) => s.consultationDate === getLocalISODate(selectedDate)
+    );
 
     return configuredHours.map((fullTime) => {
       const simpleTime = formatTime(fullTime);
 
       const appointment = appointmentsToday.find(
-        (app) => app.time === simpleTime
+        (app) => app.consultationTime === simpleTime
       );
 
       if (appointment) {
@@ -289,8 +267,8 @@ const SchedulingProfessional = () => {
             </div>
             <div className="patientInformation">
               <h3>{appointment.patientName}</h3>
-              <h3>{appointment.age} anos</h3>
-              <p>{appointment.complaint}</p>
+              <p><strong>Descrição:</strong> {appointment.consultationDescription}</p>
+              <p><strong>Email:</strong> {appointment.patientEmail}</p>
             </div>
             <button className="patientConsultationButton">
               Ficha Paciente

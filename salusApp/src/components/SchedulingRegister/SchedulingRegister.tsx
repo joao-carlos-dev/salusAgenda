@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Importe useLocation e useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   SchedulingRegisterApi,
   type ScheduleRequestDto,
 } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import "./SchedulingRegister.css";
 
 const SchedulingRegister = () => {
@@ -19,12 +20,15 @@ const SchedulingRegister = () => {
   const [patientIdInput, setPatientIdInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 2. BUSCA DADOS E VALIDA ACESSO
+  
   useEffect(() => {
-    // Se faltar dados essenciais, volta para o início
+   
     if (!date || !time || !professionalId) {
-      alert("Nenhum horário selecionado. Você será redirecionado.");
-      navigate("/"); // Ou para /home
+      toastService.warning(
+        "Nenhum horário selecionado. Você será redirecionado.",
+        "Aviso"
+      );
+      setTimeout(() => navigate("/"), 2000);
       return;
     }
 
@@ -35,8 +39,8 @@ const SchedulingRegister = () => {
         const parsed = JSON.parse(savedData);
         const id = parsed.id || parsed.userId || parsed.personalData?.id;
         if (id) setPatientIdInput(id);
-      } catch {
-        console.log("Erro ao recuperar dados do usuário");
+      } catch (e) {
+        toastService.error("Erro ao recuperar dados do usuário");
       }
     }
   }, [date, time, professionalId, navigate]);
@@ -45,38 +49,36 @@ const SchedulingRegister = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Formatação de segurança para o Backend
+
     const formattedTime = time.length === 5 ? `${time}:00` : time;
 
     const payload: ScheduleRequestDto = {
-      consultationDate: date, // Já deve vir YYYY-MM-DD do componente anterior
+      consultationDate: date, 
       consultationTime: formattedTime,
       consultationDescription: description,
       consultationCategoryId: Number(categoryId),
       patientId: patientIdInput,
-      professionalUserId: professionalId, // Usa o ID recebido via state
+      professionalUserId: professionalId,
     };
 
     try {
       console.log(" Enviando agendamento:", payload);
       await SchedulingRegisterApi(payload);
 
-      alert("Consulta agendada com sucesso!");
+      toastService.success("Consulta agendada com sucesso!");
 
-      // Limpa histórico e redireciona para Home ou Meus Agendamentos
       navigate("/home", { replace: true });
     } catch (error) {
-      console.error("Erro ao agendar:", error);
-      alert("Erro ao realizar agendamento. Tente novamente.");
+      toastService.handleApiError(error, "Erro ao agendar consulta");
     } finally {
       setLoading(false);
     }
   };
 
-  // Se não tiver dados, não renderiza nada (o useEffect vai redirecionar)
+  
   if (!date || !time) return null;
 
-  // Formatação visual da data para o usuário (PT-BR)
+
   const displayDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR");
 
   return (

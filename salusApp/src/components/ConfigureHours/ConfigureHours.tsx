@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { GetProfessionalHoursAPI, UpdateProfessionalHoursAPI } from "../../services/salusApi";
+import { toastService } from "../../services/toastService";
 import "./configureHours.css";
 
 const ConfigureHours = () => {
@@ -17,7 +18,7 @@ const ConfigureHours = () => {
         currentId = parsed.id || parsed.userId || parsed.personalData?.id;
         if (currentId) setUserId(currentId);
       } catch (e) {
-        console.error("Erro ao ler ID", e);
+        toastService.error("Erro ao ler dados do usuário");
       }
     }
 
@@ -25,11 +26,9 @@ const ConfigureHours = () => {
       if (!currentId) return;
       try {
         const response = await GetProfessionalHoursAPI(currentId);
-        console.log("Horários carregados:", response.data);
 
         let hoursList: string[] = [];
 
-        // Tratamento flexível da resposta (Array ou Objeto)
         if (response.data && Array.isArray(response.data.hours)) {
           hoursList = response.data.hours;
         } else if (Array.isArray(response.data)) {
@@ -38,12 +37,10 @@ const ConfigureHours = () => {
           hoursList = Object.keys(response.data);
         }
 
-        // Formata para HH:mm (remove segundos se houver) para bater com os botões
         const formattedList = hoursList.map((h) => h.substring(0, 5));
-
         setSelectedHours(formattedList);
       } catch (error) {
-        console.error("Erro ao carregar horários atuais:", error);
+        toastService.handleApiError(error, "Erro ao carregar horários atuais");
       }
     };
 
@@ -74,7 +71,7 @@ const ConfigureHours = () => {
 
   const handleSave = async () => {
     if (!userId) {
-      alert("Erro: ID do usuário não encontrado.");
+      toastService.error("Erro: ID do usuário não encontrado");
       return;
     }
 
@@ -84,14 +81,10 @@ const ConfigureHours = () => {
 
     setLoading(true);
     try {
-      console.log("Enviando horários:", formattedHours);
-
       await UpdateProfessionalHoursAPI(userId, formattedHours);
-
-      alert("Horários de atendimento atualizados com sucesso!");
+      toastService.success("Horários de atendimento atualizados com sucesso!");
     } catch (error) {
-      console.error("Erro ao salvar horários:", error);
-      alert("Ocorreu um erro ao salvar os horários.");
+      toastService.handleApiError(error, "Erro ao salvar horários");
     } finally {
       setLoading(false);
     }
