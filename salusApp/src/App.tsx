@@ -3,7 +3,7 @@ import "./Global.css";
 import Login from "./components/Login/Login";
 import { RegisterForm } from "./components/RegisterForm/RegisterForm";
 import Scheduling from "./components/Scheduling/scheduling";
-import SchedulingProfessional from "./components/SchedulingProfessional/SchedulingProfessional";
+import SchedulingProfessional from "./components/SchedulingProfessional/schedulingProfessional";
 import ConfigureHours from "./components/ConfigureHours/ConfigureHours";
 import { RegisterFormPatient } from "./components/RegisterFormPatient/RegisterFormPatient";
 import PatientBooking from "./components/PatientBooking/PatientBooking";
