@@ -4,7 +4,9 @@ import type { RegisterPayload } from '../interfaces/RegisterPayload';
 import { toastService } from './toastService';
 
 const apiClient = axios.create({
-     
+  
+  'baseURL': 'https://sallusagenda.onrender.com',
+
      headers: {
          'Content-Type': 'application/json'
      }
@@ -57,32 +59,32 @@ apiClient.interceptors.response.use(
 );
 
 export const LoginAPI = (loginData: LoginData) => {
-     return apiClient.post('auth/professional/login', loginData)
+     return apiClient.post('/auth/professional/login', loginData)
 }
 
 export const RegisterAPI = (payload: RegisterPayload) => {
-    return apiClient.post('professional/register', payload)
+    return apiClient.post('/professional/register', payload)
 }
 
 export const GetProfessionalDataById = (id: string) => {
-    return apiClient.get(`professional/findProfessionalData/${id}`)
+    return apiClient.get(`/professional/findProfessionalData/${id}`)
 }
 
 export const UpdateProfessionalAPI = (id: string, payload: RegisterPayload) => {
-    return apiClient.put(`professional/update/${id}`, payload)
+    return apiClient.put(`/professional/update/${id}`, payload)
 }
 
 export const GetAllProfessionals = () => {
-  return apiClient.get('professional/findAll');
+  return apiClient.get('/professional/findAll');
 }
 
 export const UpdateProfessionalHoursAPI = (id: string, hoursList: string[]) => {
     const payload: HoursRequestDto = { hours: hoursList };
-    return apiClient.patch(`professional/updateHours/${id}`, payload);
+    return apiClient.patch(`/professional/updateHours/${id}`, payload);
 }
 
 export const GetProfessionalHoursAPI = (id: string) => {
-    return apiClient.get(`professional/findAllHours/${id}`);
+    return apiClient.get(`/professional/findAllHours/${id}`);
 }
 
 export const RegisterPatient = (payload: RegisterPayload) => {
@@ -90,14 +92,14 @@ export const RegisterPatient = (payload: RegisterPayload) => {
 }
 
 export const LoginPatient = (loginData: LoginData) => {
-     return apiClient.post('auth/patient/login', loginData)
+     return apiClient.post('/auth/patient/login', loginData)
 }
 
 export const SchedulingRegisterApi = (payload: ScheduleRequestDto) => {
-  return apiClient.post('schedule/register', payload)
+  return apiClient.post('/schedule/register', payload)
 }
 export const FindAllSchedules = (professionalId: string, date: string) => {
-  return apiClient.get(`schedule/findSchedule/${professionalId}?date=${date}`)
+  return apiClient.get(`/schedule/findSchedule/${professionalId}?date=${date}`)
 }
 
 // export const deleteHours = (professionalId: string, hours: string) => {
@@ -106,7 +108,7 @@ export const FindAllSchedules = (professionalId: string, date: string) => {
 
 export const deleteHours = (professionalId: string, hours: string) => {
   // O Axios trata o segundo parâmetro do delete como 'config'
-  return apiClient.delete(`professional/deleteHours/${professionalId}`, {
+  return apiClient.delete(`/professional/deleteHours/${professionalId}`, {
     headers: {
       "Content-Type": "application/json",
     },
